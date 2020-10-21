@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".Personal"></activity>
+        <activity android:name=".Contact"></activity>
+        <activity android:name=".Maps" />
+        <activity android:name=".ViewPersonal" />
         <activity android:name=".Home" />
         <activity android:name=".RegisterCenter" />
         <activity android:name=".LogInCenter" />

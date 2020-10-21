@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/phonecontact"></ImageView>
+    <EditText
+        android:id="@+id/txt_phoneAddContact"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:hint="Phone Number">
+    </EditText>
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="80dp"
+        app:srcCompat="@drawable/namecontact"></ImageView>
+    <EditText
+        android:id="@+id/txt_nameAddContact"
+        android:layout_marginTop="70dp"
+        android:layout_marginStart="40dp"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:hint="Name">
+    </EditText>
+
+</RelativeLayout>

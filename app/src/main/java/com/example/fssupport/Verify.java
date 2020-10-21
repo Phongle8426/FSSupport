@@ -27,84 +27,73 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import java.util.concurrent.TimeUnit;
 
 public class Verify extends AppCompatActivity {
-    EditText code,phone;
-    TextView error;
-    Button reSend,recieve;
+    EditText code;
+    TextView error,reSend;
     ImageButton verify;
-    private String mAuthVerificationId;
+    private String phonenumber;
     private FirebaseAuth mAuth;
-    private FirebaseUser mCurrentUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify);
-        mAuth = FirebaseAuth.getInstance();
-        mCurrentUser = mAuth.getCurrentUser();
-  //      mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
+        mAuth = FirebaseAuth.getInstance(); // bien authentication
         AnhXa();
-        setEvent();
+        phonenumber = getIntent().getStringExtra(Register.phoneValue); // lay phone tu register
+        verifyPhoneNumber(); // goi ham xu ly xac thuc phone
+        setEvent(); // goi ham xu ly RESEND CODE
     }
 
     public void AnhXa(){
         code = (EditText) findViewById(R.id.etxt_code);
-        phone = (EditText)findViewById(R.id.etxt_phone);
-        reSend = (Button) findViewById(R.id.btn_resendCode);
-        recieve = (Button) findViewById(R.id.btn_recieve);
+        reSend = (TextView) findViewById(R.id.txt_resendCode);
         verify = (ImageButton)findViewById(R.id.btn_verify);
         error = (TextView)findViewById(R.id.txt_error);
     }
 
-    public void setEvent() {
-        recieve.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String phoneNumber = phone.getText().toString();
-                if (phoneNumber.isEmpty())
-                    Toast.makeText(Verify.this, "Enter your phone number", Toast.LENGTH_SHORT).show();
-                else {
-                    //verify phone number
-                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            "+84" + phoneNumber, 60, TimeUnit.SECONDS, Verify.this,
-                            new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                                @Override
-                                public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                                    signInUser(phoneAuthCredential);
-                                }
+    // ham xu ly gui yeu cau tao code va nhan code
+    public void verifyPhoneNumber(){
+        String phoneNumber = phonenumber;
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                 phoneNumber, 60, TimeUnit.SECONDS, Verify.this,
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    @Override
+                    public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
 
-                                @Override
-                                public void onVerificationFailed(@NonNull FirebaseException e) {
-                                    error.setText("failed.");
-                                }
+                    }
 
-                                @Override
-                                public void onCodeSent(final String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                                    super.onCodeSent(verificationId, forceResendingToken);
-                                    verify.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            String verificationCode = code.getText().toString();
-                                            if (verificationId.isEmpty()) return;
-                                            //create a credential
-                                            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
-                                            signInUser(credential);
-                                        }
-                                    });
+                    //neu khong gui duoc yeu cau
+                    @Override
+                    public void onVerificationFailed(@NonNull FirebaseException e) {
+                        error.setText("failed!");
+                    }
 
-                                }
-                            });
-                }
-            }
-        });
+                    // khi ma nhap dung code thi thuc hien dang ki email
+                    @Override
+                    public void onCodeSent(final String verificationId, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                        super.onCodeSent(verificationId, forceResendingToken);
+                        verify.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String verificationCode = code.getText().toString();
+                                if (verificationId.isEmpty()) return;
+                                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
+                                signInUser(credential);
+                            }
+                        });
+                    }
+                });
     }
 
+    // ham xu li dang ki bang phone, goi ham dk bang email
         private void signInUser (PhoneAuthCredential credential){
             mAuth.signInWithCredential(credential)
                     .addOnCompleteListener(Verify.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                getValue();
+                                signUpEmail();
                             } else {
                                 if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                     error.setVisibility(View.VISIBLE);
@@ -114,7 +103,9 @@ public class Verify extends AppCompatActivity {
                         }
                     });
         }
-        public void getValue () {
+
+    // ham dang ki bang email
+        public void signUpEmail() {
             String email1 = getIntent().getStringExtra(Register.emailValue);
             String pass = getIntent().getStringExtra(Register.passValue);
             mAuth.createUserWithEmailAndPassword(email1, pass)
@@ -132,4 +123,12 @@ public class Verify extends AppCompatActivity {
                     });
         }
 
+        public void setEvent(){
+            reSend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    verifyPhoneNumber();
+                }
+            });
+        }
     }

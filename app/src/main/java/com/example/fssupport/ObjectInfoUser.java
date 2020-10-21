@@ -1,7 +1,7 @@
 package com.example.fssupport;
 
 public class ObjectInfoUser {
-    public String name, email, phone, address, idcard, blood, note;
+    public String name,birthday, email, phone, address, idcard, blood, note;
 
     public String getName() {
         return name;
@@ -59,12 +59,20 @@ public class ObjectInfoUser {
         this.note = note;
     }
 
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
     public ObjectInfoUser() {
     }
 
 
 
-    public ObjectInfoUser(String name, String email, String phone, String address, String IDcard, String blood, String note) {
+    public ObjectInfoUser(String name, String email, String phone, String address, String IDcard, String blood, String note,String birthday) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -72,5 +80,6 @@ public class ObjectInfoUser {
         this.idcard = IDcard;
         this.blood = blood;
         this.note = note;
+        this.birthday = birthday;
     }
 }
