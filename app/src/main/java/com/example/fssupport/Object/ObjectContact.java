@@ -7,7 +7,7 @@ public class ObjectContact {
     public ObjectContact() {
     }
 
-    public ObjectContact(String phone_number, String name_contact) {
+    public ObjectContact(String name_contact,String phone_number) {
         this.phone_number = phone_number;
         this.name_contact = name_contact;
     }

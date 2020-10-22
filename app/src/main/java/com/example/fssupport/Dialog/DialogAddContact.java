@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.fssupport.Contact;
 import com.example.fssupport.Object.ObjectContact;
 import com.example.fssupport.ObjectInfoUser;
 import com.example.fssupport.R;
+import com.example.fssupport.Register;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -23,7 +25,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 public class DialogAddContact extends AppCompatDialogFragment {
     EditText txtName,txtPhone;
-    public String uid,name,phone;
+    public String uid,name="",phone="";
     private DatabaseReference mDatabase;
     @NonNull
     @Override
@@ -45,11 +47,22 @@ public class DialogAddContact extends AppCompatDialogFragment {
                         pushContact();
                     }
                 });
-        txtName = view.findViewById(R.id.txt_phoneAddContact);
-        txtPhone = view.findViewById(R.id.txt_nameAddContact);
+        txtName = view.findViewById(R.id.txt_nameAddContact);
+        txtPhone = view.findViewById(R.id.txt_phoneAddContact);
+        getNamePhone();
         return builder.create();
     }
+    public void getNamePhone(){
+        try{
+            Bundle bundle = getArguments();
+            name = bundle.getString(Contact.nameValue,"");
+            phone = bundle.getString(Contact.phoneValue,"");
+        }catch (NullPointerException ignored){
 
+        }
+        txtName.setText(name);
+        txtPhone.setText(phone);
+    }
     public void getIDCanhan(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user!=null) {
@@ -60,10 +73,8 @@ public class DialogAddContact extends AppCompatDialogFragment {
     public void pushContact(){
         name = txtName.getText().toString();
         phone = txtPhone.getText().toString();
-        ObjectContact contact = new ObjectContact(phone,name);
-        mDatabase.child("ContactUser").child(uid).child(phone).setValue(contact);
-    }
-    public void check(){
+        ObjectContact contact = new ObjectContact(name,phone);
+        mDatabase.child("ContactUser").child(uid).child(name).setValue(contact);
     }
 
 }

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.fssupport.Contact;
 import com.example.fssupport.R;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -16,10 +17,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ContactAdapterRecyclerView extends RecyclerView.Adapter{
-    Contact conn = new Contact();
+    private RecyclerViewClickInterface recyclerViewClickInterface;
     List<ObjectContact> contactList;
-     public ContactAdapterRecyclerView(List<ObjectContact> contactList){
+     public ContactAdapterRecyclerView(List<ObjectContact> contactList,RecyclerViewClickInterface recyclerViewClickInterface){
          this.contactList = contactList;
+         this.recyclerViewClickInterface = recyclerViewClickInterface;
      }
     @NonNull
     @Override
@@ -42,7 +44,7 @@ public class ContactAdapterRecyclerView extends RecyclerView.Adapter{
         return contactList.size();
     }
 
-    public class ViewAdapterClass extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewAdapterClass extends RecyclerView.ViewHolder {
         TextView name,phone;
         Button edit;
         public ViewAdapterClass(@NonNull View itemView) {
@@ -50,16 +52,23 @@ public class ContactAdapterRecyclerView extends RecyclerView.Adapter{
             name = itemView.findViewById(R.id.txtv_nameContact);
             phone = itemView.findViewById(R.id.txtv_phoneContact);
             edit = itemView.findViewById(R.id.btn_edit);
-            itemView.setOnClickListener(this);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAbsoluteAdapterPosition();
+                    recyclerViewClickInterface.onItemClick(position);
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    recyclerViewClickInterface.onLongItemClick(getAbsoluteAdapterPosition());
+                    return false;
+                }
+            });
         }
 
-        @Override
-        public void onClick(View view) {
-           int position = getAbsoluteAdapterPosition();
-           String xxx =  contactList.get(position).getName_contact();
-            Toast.makeText(view.getContext(), "" + xxx, Toast.LENGTH_SHORT).show();
-
-        }
     }
 }
 
