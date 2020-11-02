@@ -3,12 +3,10 @@ package com.example.fssupport;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -20,9 +18,10 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,8 +29,10 @@ public class Verify extends AppCompatActivity {
     EditText code;
     TextView error,reSend;
     ImageButton verify;
+    ProgressDialog loadingProcess;
     private String phonenumber;
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
 
     @Override
@@ -39,6 +40,7 @@ public class Verify extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify);
         mAuth = FirebaseAuth.getInstance(); // bien authentication
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         AnhXa();
         phonenumber = getIntent().getStringExtra(Register.phoneValue); // lay phone tu register
         verifyPhoneNumber(); // goi ham xu ly xac thuc phone
@@ -50,8 +52,15 @@ public class Verify extends AppCompatActivity {
         reSend = (TextView) findViewById(R.id.txt_resendCode);
         verify = (ImageButton)findViewById(R.id.btn_verify);
         error = (TextView)findViewById(R.id.txt_error);
+        loadingProcess = new ProgressDialog(this);
     }
-
+    // Show Progress Dialog Verification
+    public void contentOfLoading(){
+        loadingProcess.setTitle("Phone Verification");
+        loadingProcess.setMessage("Please wait...while we are authenticating your phone number..");
+        loadingProcess.setCanceledOnTouchOutside(false);
+        loadingProcess.show();
+    }
     // ham xu ly gui yeu cau tao code va nhan code
     public void verifyPhoneNumber(){
         String phoneNumber = phonenumber;
@@ -62,11 +71,10 @@ public class Verify extends AppCompatActivity {
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
 
                     }
-
                     //neu khong gui duoc yeu cau
                     @Override
                     public void onVerificationFailed(@NonNull FirebaseException e) {
-                        error.setText("failed!");
+                        error.setText("This phone number exits!");
                     }
 
                     // khi ma nhap dung code thi thuc hien dang ki email
@@ -76,6 +84,7 @@ public class Verify extends AppCompatActivity {
                         verify.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                contentOfLoading();
                                 String verificationCode = code.getText().toString();
                                 if (verificationId.isEmpty()) return;
                                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, verificationCode);
@@ -93,7 +102,10 @@ public class Verify extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                pushPhoneNumber(phonenumber);
+                                loadingProcess.dismiss();
                                 signUpEmail();
+
                             } else {
                                 if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                     error.setVisibility(View.VISIBLE);
@@ -104,6 +116,10 @@ public class Verify extends AppCompatActivity {
                     });
         }
 
+     // ham luu sdt duoc dang ki vao DB
+     public void pushPhoneNumber(String phonenumber){
+        mDatabase.child("PhoneNumber").push().child("phone").setValue(phonenumber);
+     }
     // ham dang ki bang email
         public void signUpEmail() {
             String email1 = getIntent().getStringExtra(Register.emailValue);

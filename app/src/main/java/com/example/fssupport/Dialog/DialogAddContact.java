@@ -57,9 +57,7 @@ public class DialogAddContact extends AppCompatDialogFragment {
             Bundle bundle = getArguments();
             name = bundle.getString(Contact.nameValue,"");
             phone = bundle.getString(Contact.phoneValue,"");
-        }catch (NullPointerException ignored){
-
-        }
+        }catch (NullPointerException ignored){}
         txtName.setText(name);
         txtPhone.setText(phone);
     }
@@ -73,8 +71,21 @@ public class DialogAddContact extends AppCompatDialogFragment {
     public void pushContact(){
         name = txtName.getText().toString();
         phone = txtPhone.getText().toString();
-        ObjectContact contact = new ObjectContact(name,phone);
-        mDatabase.child("ContactUser").child(uid).child(name).setValue(contact);
+       if (checkError(phone,name)==false) {
+           ObjectContact contact = new ObjectContact(name, phone);
+           mDatabase.child("ContactUser").child(uid).child(name).setValue(contact);
+       }
     }
 
+    public boolean checkError(String phone, String name){
+        if(phone.isEmpty()||name.isEmpty()){
+            Toast.makeText(getContext(), "PhoneNumber or Name is empty!", Toast.LENGTH_LONG).show();
+            return true;
+        }
+        if(phone.length()!=10){
+            Toast.makeText(getContext(), "PhoneNumber is invalid", Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
+    }
 }

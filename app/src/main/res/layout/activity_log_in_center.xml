@@ -5,59 +5,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LogIn">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/sos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:lottie_rawRes="@raw/authen"
+            android:layout_marginTop="1dp"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="407dp"
-        android:layout_height="426dp"
-        android:layout_marginBottom="396dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="330dp"
+        android:layout_height="332dp"
+        android:layout_marginTop="332dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/bgregis" />
+        app:srcCompat="@drawable/bgtextbox" />
 
     <EditText
-        android:id="@+id/txt_email"
+        android:id="@+id/txt_email_center"
         android:layout_width="289dp"
         android:layout_height="40dp"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="152dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="384dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/txt_password"
-        android:layout_width="289dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="15dp"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_email" />
-
     <CheckBox
-        android:id="@+id/cb_remember"
+        android:id="@+id/cb_remember_center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="16dp"
         android:text="Remember me!"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_password" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_password_center" />
 
     <Button
-        android:id="@+id/btn_forgot"
+        android:id="@+id/btn_forgot_center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="124dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="132dp"
+        android:layout_marginTop="12dp"
         android:background="#FFFFFF"
         android:maxLines="1"
         android:minWidth="0dp"
@@ -65,24 +67,24 @@
         android:text="Forgot password?"
         android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cb_remember" />
+        app:layout_constraintTop_toBottomOf="@+id/cb_remember_center" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="12dp"
         android:text="You do not have account"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_forgot" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_forgot_center" />
 
     <Button
-        android:id="@+id/btn_goto_regis"
+        android:id="@+id/btn_goto_regis_center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
         android:background="#FFFFFF"
         android:maxLines="1"
         android:minWidth="0dp"
@@ -91,31 +93,31 @@
         android:textAllCaps="false"
         android:textColor="#03A9F4"
         app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/btn_forgot" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_forgot_center" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="36dp"
-        android:text="SIGN IN CENTER"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:textStyle="bold"
+    <EditText
+        android:id="@+id/txt_password_center"
+        android:layout_width="289dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_email_center" />
 
     <ImageButton
-        android:id="@+id/btn_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:id="@+id/btn_login_center"
+        android:layout_width="327dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="224dp"
+        android:layout_marginBottom="10dp"
         android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        app:layout_constraintVertical_bias="0.504"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/bgbuttonregister" />
 </androidx.constraintlayout.widget.ConstraintLayout>

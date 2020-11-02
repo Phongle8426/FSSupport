@@ -63,7 +63,7 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
             Toast.makeText(this, "Loi lay UID", Toast.LENGTH_SHORT).show();
         }
     }
-    public void adp(){
+    public void newContactAdapterRecyclerView(){
         adapterRecyclerView = new ContactAdapterRecyclerView(contactList,this);
     }
 
@@ -77,8 +77,7 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
                     ObjectContact ds = data.getValue(ObjectContact.class);
                     contactList.add(ds);
                 }
-                adp();
-             //   adapterRecyclerView = new ContactAdapterRecyclerView(contactList,recyclerViewClickInterface);
+                newContactAdapterRecyclerView();
                 recyclerView.setAdapter(adapterRecyclerView);
             }
 

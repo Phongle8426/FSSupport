@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import static com.example.fssupport.LogIn.MyPREFERENCES;
@@ -24,8 +25,9 @@ import static com.example.fssupport.LogIn.MyPREFERENCES;
 
 public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
-    ImageButton map,contact,profile,history,sos;
+    ImageButton map,contact,profile,history;
     Button popup;
+    LottieAnimationView sos;
     SharedPreferences sharedpreferences;
     private FirebaseAuth mAuth;
 
@@ -108,7 +110,7 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         contact = (ImageButton)findViewById(R.id.btn_contact);
         profile = (ImageButton)findViewById(R.id.btn_profile);
         history = (ImageButton)findViewById(R.id.btn_history);
-        sos = (ImageButton)findViewById(R.id.btn_sos);
+        sos = findViewById(R.id.sos);
     }
 
     @Override

@@ -8,12 +8,19 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +36,7 @@ public class Register extends AppCompatActivity{
     public static final String phoneValue = "PHONEVALUE";
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
+    private DatabaseReference mDatabase;
 
 
 
@@ -38,6 +46,7 @@ public class Register extends AppCompatActivity{
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         AnhXa();
         setAction();
     }
@@ -74,19 +83,34 @@ public class Register extends AppCompatActivity{
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phone_number ="+84" + phonenumber.getText().toString();
-                String Email = email.getText().toString();
-                String Password = password.getText().toString();
+               final String phone_number ="+84" + phonenumber.getText().toString();
+               final String Email = email.getText().toString();
+               final String Password = password.getText().toString();
                 if(showError()){
                     error.setText(errorMessage);
                     error.setVisibility(View.VISIBLE);
                 }
                 else {
-                    Intent intent = new Intent(Register.this, Verify.class);
-                    intent.putExtra(phoneValue,phone_number);
-                    intent.putExtra(emailValue,Email);
-                    intent.putExtra(passValue,Password);
-                    startActivity(intent);
+                    mDatabase.child("PhoneNumber").orderByChild("phone").equalTo(phone_number).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists()){
+                                error.setText("This phone number already exists!");
+                            }else {
+                                Intent intent = new Intent(Register.this, Verify.class);
+                                intent.putExtra(phoneValue,phone_number);
+                                intent.putExtra(emailValue,Email);
+                                intent.putExtra(passValue,Password);
+                                startActivity(intent);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                 }
             }
         });

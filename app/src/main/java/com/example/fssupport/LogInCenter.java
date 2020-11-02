@@ -24,17 +24,17 @@ public class LogInCenter extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_log_in);
+        setContentView(R.layout.activity_log_in_center);
         mAuth = FirebaseAuth.getInstance();
-        AnhXa();
-        setEvent();
+     //   AnhXa();
+        //setEvent();
     }
 
-    public void AnhXa(){
-        email = (EditText) findViewById(R.id.txt_email);
-        password = (EditText)findViewById(R.id.txt_password);
-        login = (ImageButton)findViewById(R.id.btn_login);
-        gotoRegis = (Button)findViewById(R.id.btn_goto_regis);
+   /* public void AnhXa(){
+        email = (EditText) findViewById(R.id.txt_email_center);
+        password = (EditText)findViewById(R.id.txt_password_center);
+        login = (ImageButton)findViewById(R.id.btn_login_center);
+        gotoRegis = (Button)findViewById(R.id.btn_goto_regis_center);
     }
     private void Login() {
         String Email = email.getText().toString();
@@ -72,5 +72,5 @@ public class LogInCenter extends AppCompatActivity {
             }
         });
     }
-
+*/
 }

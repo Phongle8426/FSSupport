@@ -49,6 +49,7 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
     private FirebaseStorage storage;
     public String uid, name2,birthday2, email2, phone2, address2, idcard2, blood2, note2;
     ProgressBar load;
+    private boolean isExistsInformation = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +63,11 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
         blood.setInputType(InputType.TYPE_NULL);
         birthday.setInputType(InputType.TYPE_NULL);
         getIDCanhan();
+        getInfoUser();
         setEvent();
     }
 
+    // lấy ID của user hiện tại
     public void getIDCanhan(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user!=null) {
@@ -74,6 +77,7 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
         }
     }
 
+    //lêý giá trị được nhập vào ở các trường
     public void getValueOnField(){
         name2 = name.getText().toString();
         email2 = email.getText().toString();
@@ -85,6 +89,7 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
         birthday2 = birthday.getText().toString();
     }
 
+    // KKhông cho phép nhập các trường
     public void disableTextField(){
         name.setEnabled(false);
         birthday.setEnabled(false);
@@ -95,38 +100,49 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
         blood.setEnabled(false);
         note.setEnabled(false);
     }
+
+    // Cho phép nhập các trường
     public void enableTextField(){
-        name.setEnabled(true);
-        birthday.setEnabled(true);
+        if (isExistsInformation == false){  // nếu thông tin đã đuọc nhập 1 lần.
+            name.setEnabled(true);
+            birthday.setEnabled(true);
+            idcard.setEnabled(true);
+        }
         email.setEnabled(true);
         phonenumber.setEnabled(true);
         address.setEnabled(true);
-        idcard.setEnabled(true);
         blood.setEnabled(true);
         note.setEnabled(true);
     }
+
+    // đẩy thông tin user lên DB
     public void pushInfo(){
         getValueOnField();
-        ObjectInfoUser infoUser = new ObjectInfoUser(name2,birthday2, email2, phone2, address2, idcard2, blood2, note2);
+        ObjectInfoUser infoUser = new ObjectInfoUser(name2,email2, phone2, address2, idcard2, blood2, note2, birthday2);
         mDatabase.child("InfoUser").child(uid).setValue(infoUser);
     }
+
+   // Lấy thông tin của user từ DB về
     public void getInfoUser(){
         mDatabase.child("InfoUser").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //showInfoUser(snapshot);
+                if (snapshot.exists())
+                    isExistsInformation = true;
+                showInfoUser(snapshot);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
+
+    // Lấy và hiển thị thông tin của user lên các trường
     public void showInfoUser(DataSnapshot snapshot){
         ObjectInfoUser infoUser =new ObjectInfoUser();
         infoUser.setName(snapshot.child(uid).child("name").getValue(String.class));
-        infoUser.setName(snapshot.child(uid).child("birthday").getValue(String.class));
+        infoUser.setBirthday(snapshot.child(uid).child("birthday").getValue(String.class));
         infoUser.setEmail(snapshot.child(uid).child("email").getValue(String.class));
         infoUser.setPhone(snapshot.child(uid).child("phone").getValue(String.class));
         infoUser.setAddress(snapshot.child(uid).child("address").getValue(String.class));
@@ -145,7 +161,7 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
 
     }
 
-
+    // Bắt sự kiện các nút bấm
     public void setEvent(){
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,17 +192,21 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
             }
         });
     }
+
+    // Dialog xác nhận thay đổi thông tin
     public void dialogConfirm(){
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Change Personal Information!");
-        dialog.setMessage("Do you want to change?");
+        dialog.setMessage("Do you want to change? Please ensure that all of the information you provide is correct," +
+                " you must responsible for it!");
         dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 pushInfo();
-                enableTextField();
                 edit.setVisibility(View.VISIBLE);
                 save.setVisibility(View.INVISIBLE);
+                disableTextField();
+                isExistsInformation = true;
 
             }
         });
@@ -200,6 +220,7 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
         al.show();
     }
 
+    //Dialog chọn nhóm máu
     public void dialogChooseBlood(){
         final String[] datas = {"A", "B","C"};
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -213,6 +234,8 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
         AlertDialog al = dialog.create();
         al.show();
     }
+
+    //Dialog chọn ngày sinh
     public void showTimeDialog1(final EditText TimePicker1){
         final Calendar calendar = Calendar.getInstance();
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
@@ -228,6 +251,8 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
         };
         new DatePickerDialog(this, dateSetListener,calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)).show();
     }
+
+    //Ánh xạ các đối tượng trên Resource
     public void AnhXa(){
         name = (EditText) findViewById(R.id.txt_name);
         birthday = (EditText) findViewById(R.id.txt_birthday);
