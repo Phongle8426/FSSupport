@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -163,6 +165,31 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
 
     // Bắt sự kiện các nút bấm
     public void setEvent(){
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigate);
+        bottomNavigationView.setSelectedItemId(R.id.personal);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    //1 cho cho history
+                    case R.id.map:
+                        startActivity(new Intent(getApplicationContext(),Maps.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(),Home.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                    case R.id.contact:
+                        startActivity(new Intent(getApplicationContext(),Contact.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                    case R.id.personal:
+                        return true;
+                }
+                return false;
+            }
+        });
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

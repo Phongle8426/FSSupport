@@ -29,13 +29,6 @@ public class Welcome extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        roleCenter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent inten1 = new Intent(Welcome.this, LogInCenter.class);
-                startActivity(inten1);
-            }
-        });
     }
 
 }

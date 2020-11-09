@@ -24,11 +24,11 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="330dp"
-        android:layout_height="330dp"
-        android:layout_marginTop="330dp"
+        android:layout_width="329dp"
+        android:layout_height="315dp"
+        android:layout_marginTop="300dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bgtextbox" />
@@ -112,23 +112,26 @@
     <Button
         android:id="@+id/btn_login"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         android:background="@drawable/bgbuttonregister"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:layout_constraintVertical_bias="0.187" />
 
     <TextView
         android:id="@+id/txt_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
+        android:layout_marginStart="110dp"
         android:layout_marginTop="28dp"
         android:textColor="#F44336"
         android:textSize="18sp"
+        android:gravity="center_horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -138,7 +141,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="176dp"
-        android:layout_marginTop="588dp"
+        android:layout_marginTop="556dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

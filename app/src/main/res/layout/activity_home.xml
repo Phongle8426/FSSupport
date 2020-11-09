@@ -8,50 +8,16 @@
 
     <Button
         android:id="@+id/btn_option"
-        android:layout_width="52dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/option_cel"
+        android:background="@drawable/ic_setting"
         android:onClick="showPopup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/btn_history"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="315dp"
-        android:background="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/historybutton" />
 
-    <ImageButton
-        android:id="@+id/btn_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="223dp"
-        android:layout_marginTop="168dp"
-        android:background="#03045E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/personalbutton" />
-
-    <ImageButton
-        android:id="@+id/btn_contact"
-        android:layout_width="wrap_content"
-        android:layout_height="204dp"
-        android:layout_marginTop="70dp"
-        android:background=" #0077B6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.529"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/contactbutton" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -63,74 +29,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:lottie_rawRes="@raw/sosanimation"
-            android:layout_marginTop="500dp"
             app:lottie_loop="true"
             app:lottie_autoPlay="true"
             android:layout_centerHorizontal="true" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigate"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/rounded"
+            app:itemIconTint="@drawable/selector"
+            app:menu="@menu/menu_navigate" />
     </RelativeLayout>
 
-    <ImageButton
-        android:id="@+id/btn_map"
-        android:layout_width="wrap_content"
-        android:layout_height="148dp"
-        android:background="#00B4D8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/mapbutton" />
 
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="170dp"
-        android:layout_marginTop="60dp"
-        android:text="Maps"
-        android:textColor="#FFFFFF"
-        android:textSize="35sp"
-        android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_map" />
 
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="170dp"
-        android:layout_marginTop="70dp"
-        android:text="Contact"
-        android:textColor="#FFFFFF"
-        android:textSize="35sp"
-        android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="170dp"
-        android:layout_marginTop="72dp"
-        android:text="Personal "
-        android:textColor="#FFFFFF"
-        android:textSize="35sp"
-        android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
-
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="170dp"
-        android:layout_marginTop="70dp"
-        android:text="History"
-        android:textColor="#FFFFFF"
-        android:textSize="35sp"
-        android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

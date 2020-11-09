@@ -52,11 +52,10 @@ public class ForgotPassword extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful())
-                Toast.makeText(ForgotPassword.this, "Please checked your email to reset your password!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ForgotPassword.this, "Please checked your email to reset your password!", Toast.LENGTH_LONG).show();
                 else
-                    Toast.makeText(ForgotPassword.this, "Fail to send reset password email!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForgotPassword.this, "Fail to send reset password email!", Toast.LENGTH_LONG).show();
             }
         });
     }
-
 }

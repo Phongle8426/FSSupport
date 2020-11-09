@@ -60,9 +60,6 @@ public class LogIn extends AppCompatActivity {
         if (Email.isEmpty() || Password.isEmpty()){        // Nếu email hay pass trống thì thực hiện
             error.setText("Something is empty!");
             progress.setVisibility(View.INVISIBLE);         // báo lỗi
-//            if (Email.isEmpty())                               //
-//                email.setFocusable(true);
-//            password.setFocusable(true);
         }else{
             mAuth.signInWithEmailAndPassword(Email, Password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

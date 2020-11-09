@@ -1,5 +1,6 @@
 package com.example.fssupport;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -18,6 +19,7 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import static com.example.fssupport.LogIn.MyPREFERENCES;
@@ -74,7 +76,32 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         editor.commit();
     }
     public void setEvent(){
-        map.setOnClickListener(new View.OnClickListener() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigate);
+        bottomNavigationView.setSelectedItemId(R.id.home);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+
+                    case R.id.personal:
+                        startActivity(new Intent(getApplicationContext(),ViewPersonal.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                    case R.id.map:
+                        startActivity(new Intent(getApplicationContext(),Maps.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                    case R.id.contact:
+                        startActivity(new Intent(getApplicationContext(),Contact.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                    case R.id.home:
+                        return true;
+                }
+                return false;
+            }
+        });
+       /* map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent_maps = new Intent(Home.this,Maps.class);
@@ -94,7 +121,7 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
                 Intent intent_personal = new Intent(Home.this,ViewPersonal.class);
                 startActivity(intent_personal);
             }
-        });
+        });*/
     }
 
     public void showPopup(View v){
@@ -106,10 +133,10 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
 
     public void AnhXa(){
         popup = (Button)findViewById(R.id.btn_option);
-        map = (ImageButton)findViewById(R.id.btn_map);
-        contact = (ImageButton)findViewById(R.id.btn_contact);
-        profile = (ImageButton)findViewById(R.id.btn_profile);
-        history = (ImageButton)findViewById(R.id.btn_history);
+       // map = (ImageButton)findViewById(R.id.btn_map);
+      //  contact = (ImageButton)findViewById(R.id.btn_contact);
+      //  profile = (ImageButton)findViewById(R.id.btn_profile);
+      //  history = (ImageButton)findViewById(R.id.btn_history);
         sos = findViewById(R.id.sos);
     }
 
