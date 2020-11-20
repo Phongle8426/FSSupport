@@ -95,7 +95,7 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
         mDatabase.child(contact).child("phone_number").setValue(null);
     }
 
-    public void setEvent(){
+    public void activeItemBottomNavigation(){
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigate);
         bottomNavigationView.setSelectedItemId(R.id.contact);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -115,13 +115,20 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
                         startActivity(new Intent(getApplicationContext(),Maps.class));
                         overridePendingTransition(0,0);
                         return true;
+                    case R.id.history:
+                        startActivity(new Intent(getApplicationContext(),History.class));
+                        overridePendingTransition(0,0);
+                        return true;
                     case R.id.contact:
                         return true;
                 }
                 return false;
             }
         });
-        addContact.setOnClickListener(new View.OnClickListener() {
+    }
+    public void setEvent(){
+       activeItemBottomNavigation();
+       addContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openDialogAddContact();

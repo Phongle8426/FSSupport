@@ -23,9 +23,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.fssupport.Object.ObjectContact;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,16 +44,18 @@ import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
-    EditText name,birthday,address,phonenumber,email,blood,idcard,note;
+    TextInputEditText name,birthday,address,phonenumber,email,blood,idcard,note;
     Button edit,save;
     private DatabaseReference mDatabase;
     private FirebaseStorage storage;
     public String uid, name2,birthday2, email2, phone2, address2, idcard2, blood2, note2;
-    ProgressBar load;
+   // ProgressBar load;
     private boolean isExistsInformation = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +66,7 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
         AnhXa();
         disableTextField();
         save.setVisibility(View.INVISIBLE);
-        load.setVisibility(View.INVISIBLE);
-        blood.setInputType(InputType.TYPE_NULL);
-        birthday.setInputType(InputType.TYPE_NULL);
+       // load.setVisibility(View.INVISIBLE);
         getIDCanhan();
         getInfoUser();
         setEvent();
@@ -142,7 +145,8 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
 
     // Lấy và hiển thị thông tin của user lên các trường
     public void showInfoUser(DataSnapshot snapshot){
-        ObjectInfoUser infoUser =new ObjectInfoUser();
+        List<ObjectInfoUser> infoUsers = new ArrayList<>();
+       /* ObjectInfoUser infoUser =new ObjectInfoUser();
         infoUser.setName(snapshot.child(uid).child("name").getValue(String.class));
         infoUser.setBirthday(snapshot.child(uid).child("birthday").getValue(String.class));
         infoUser.setEmail(snapshot.child(uid).child("email").getValue(String.class));
@@ -161,10 +165,23 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
         blood.setText(infoUser.getBlood());
         note.setText(infoUser.getNote());
 
+        */
+        for (DataSnapshot data : snapshot.getChildren()){
+            ObjectInfoUser ds = data.getValue(ObjectInfoUser.class);
+            infoUsers.add(ds);
+        }
+        name.setText(infoUsers.get(0).getName());
+        birthday.setText(infoUsers.get(0).getBirthday());
+        email.setText(infoUsers.get(0).getEmail());
+        phonenumber.setText(infoUsers.get(0).getPhone());
+        address.setText(infoUsers.get(0).getAddress());
+        idcard.setText(infoUsers.get(0).getIdcard());
+        blood.setText(infoUsers.get(0).getBlood());
+        note.setText(infoUsers.get(0).getNote());
+
     }
 
-    // Bắt sự kiện các nút bấm
-    public void setEvent(){
+    public void activeItemBottomNavigation(){
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigate);
         bottomNavigationView.setSelectedItemId(R.id.personal);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -184,12 +201,20 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
                         startActivity(new Intent(getApplicationContext(),Contact.class));
                         overridePendingTransition(0,0);
                         return true;
+                    case R.id.history:
+                        startActivity(new Intent(getApplicationContext(),History.class));
+                        overridePendingTransition(0,0);
+                        return true;
                     case R.id.personal:
                         return true;
                 }
                 return false;
             }
         });
+    }
+    // Bắt sự kiện các nút bấm
+    public void setEvent(){
+        activeItemBottomNavigation();
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -273,7 +298,7 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                birthday.setText(simpleDateFormat.format(calendar.getTime()));
+              //  birthday.setText(simpleDateFormat.format(calendar.getTime()));
             }
         };
         new DatePickerDialog(this, dateSetListener,calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)).show();
@@ -281,17 +306,17 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
 
     //Ánh xạ các đối tượng trên Resource
     public void AnhXa(){
-        name = (EditText) findViewById(R.id.txt_name);
-        birthday = (EditText) findViewById(R.id.txt_birthday);
-        address = (EditText) findViewById(R.id.txt_address);
-        phonenumber = (EditText) findViewById(R.id.txt_phone);
-        email = (EditText) findViewById(R.id.txt_email);
-        blood = (EditText) findViewById(R.id.txt_blood);
-        idcard = (EditText) findViewById(R.id.txt_idcard);
-        note = (EditText) findViewById(R.id.txt_note);
+        name = findViewById(R.id.txt_name);
+        birthday = findViewById(R.id.txt_birthday);
+        address = findViewById(R.id.txt_address);
+        phonenumber = findViewById(R.id.txt_phone);
+        email =  findViewById(R.id.email);
+        blood = findViewById(R.id.txt_blood);
+        idcard = findViewById(R.id.txt_idcard);
+        note =  findViewById(R.id.txt_note);
         edit = (Button)findViewById(R.id.btn_edit);
         save = (Button)findViewById(R.id.btn_save);
-        load =(ProgressBar)findViewById(R.id.progressLoadInViewPersonal);
+      //  load =(ProgressBar)findViewById(R.id.progressLoadInViewPersonal);
     }
 
     @Override

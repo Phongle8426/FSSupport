@@ -1,158 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
     tools:context=".LogIn">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
+        android:layout_gravity="center_horizontal">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/sos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:lottie_rawRes="@raw/authen"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_marginTop="1dp"
-            app:lottie_loop="true"
             app:lottie_autoPlay="true"
-            android:layout_centerHorizontal="true" />
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/authen" />
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="329dp"
-        android:layout_height="315dp"
-        android:layout_marginTop="300dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.512"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bgtextbox" />
-
-    <EditText
-        android:id="@+id/txt_email"
-        android:layout_width="289dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="44dp"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView3" />
-
-    <EditText
-        android:id="@+id/txt_password"
-        android:layout_width="289dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="15dp"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_email" />
-
-    <CheckBox
-        android:id="@+id/cb_remember"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="15dp"
-        android:text="Remember me!"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_password" />
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/abril_fatface"
+        android:text="HELLO, WELCOME TO US"
+        android:textSize="30sp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign in to continue."
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:hint="Email"
+        android:textColorHint="#000000"
+        app:boxStrokeColor="#D4D8E7"
+        app:hintTextColor="#3066AC"
+        app:startIconDrawable="@drawable/ic_mail">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txt_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:passwordToggleEnabled="true"
+        android:layout_gravity="center_horizontal"
+        android:hint="Password"
+        android:textColorHint="#000000"
+        app:boxStrokeColor="#D4D8E7"
+        app:hintTextColor="#3066AC"
+        app:startIconDrawable="@drawable/ic_pass">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txt_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000">
+
+        </com.google.android.material.textfield.TextInputEditText>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <LinearLayout
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center_horizontal">
+        <CheckBox
+            android:id="@+id/cb_remember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remember me!" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="27dp"/>
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/btn_forgot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="124dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:maxLines="1"
         android:minWidth="0dp"
         android:minHeight="0dp"
         android:text="Forgot password?"
         android:textAllCaps="false"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cb_remember" />
-
+        android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp">
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="15dp"
-        android:text="You do not have account"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_forgot" />
+        android:text="You do not have account" />
 
     <TextView
         android:id="@+id/btn_goto_regis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="15dp"
-        android:maxLines="1"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
         android:text="Register now!"
         android:textAllCaps="false"
         android:textColor="#03A9F4"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/btn_forgot" />
-
-
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        android:background="@drawable/bgbuttonregister"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        app:layout_constraintVertical_bias="0.187" />
+        android:textStyle="bold" />
+</LinearLayout>
 
     <TextView
         android:id="@+id/txt_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="110dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
         android:textColor="#F44336"
-        android:textSize="18sp"
-        android:gravity="center_horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        android:textSize="18sp" />
 
-    <ProgressBar
-        android:id="@+id/progress"
-        style="?android:attr/progressBarStyle"
+
+    <Button
+        android:id="@+id/btn_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="176dp"
-        android:layout_marginTop="556dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bgbuttonregister"/>
 
-    <ImageView
-        android:id="@+id/img_password"
-        android:layout_width="35dp"
-        android:layout_height="29dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/txt_password"
-        app:layout_constraintTop_toBottomOf="@+id/txt_email"
-        app:srcCompat="@drawable/show" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

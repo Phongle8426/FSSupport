@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.fssupport">
 
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -11,15 +14,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".DetailHistory"></activity>
+        <activity android:name=".History" />
         <activity android:name=".ForgotPassword" />
         <activity android:name=".Register" />
         <activity android:name=".Contact" />
         <activity android:name=".Home" />
-        <activity android:name=".ViewPersonal" />
+        <activity android:name=".ViewPersonal"  android:windowSoftInputMode="stateVisible"/>
         <activity android:name=".FireStorages" />
         <activity android:name=".Maps" />
         <activity android:name=".Verify" />
-        <activity android:name=".Welcome" />
         <activity android:name=".LogIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,6 +31,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

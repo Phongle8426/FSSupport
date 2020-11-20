@@ -2,35 +2,70 @@ package com.example.fssupport;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.fssupport.Modules.DirectionFinder;
+import com.example.fssupport.Modules.DirectionFinderListener;
+import com.example.fssupport.Modules.Route;
+import com.example.fssupport.Object.ObjectContact;
+import com.example.fssupport.Object.ObjectDistanceCenter;
+import com.example.fssupport.Object.ObjectProfileCenter;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import static com.example.fssupport.LogIn.MyPREFERENCES;
 
 
-public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener, OnMapReadyCallback, DirectionFinderListener {
 
-    ImageButton map,contact,profile,history;
     Button popup;
     LottieAnimationView sos;
     SharedPreferences sharedpreferences;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    public String uid,longitudeUser,latitudeUser,cityUser,finalIndex,latitudeCenter,longitudeCenter,nameCenter,typeCenter;
+    public List<ObjectProfileCenter> centerList;
+    public List<ObjectContact> contact;
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
+    private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
     @Override
@@ -38,12 +73,23 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mAuth =FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         AnhXa();
+        getUid();
         setEvent();
+
+
     }
 
+    //lấy UID
+    public void getUid(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        uid = user.getUid();
+    }
+
+    // Hiênj dialog setting
     public void dialogLogOut(){
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Log Out!");
@@ -63,6 +109,8 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         AlertDialog al = dialog.create();
         al.show();
     }
+
+    //chức năng Logout
     public void sigOut(){
         mAuth.signOut();
         clearData();
@@ -70,19 +118,19 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         intent_toLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent_toLogin);
     }
+    // xóa key-value shareReference ghi nhớ tài khoản
     private void clearData() {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.clear();
         editor.commit();
     }
-    public void setEvent(){
+    public void activeItemBottomNavigation(){
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigate);
         bottomNavigationView.setSelectedItemId(R.id.home);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
-
                     case R.id.personal:
                         startActivity(new Intent(getApplicationContext(),ViewPersonal.class));
                         overridePendingTransition(0,0);
@@ -95,35 +143,216 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
                         startActivity(new Intent(getApplicationContext(),Contact.class));
                         overridePendingTransition(0,0);
                         return true;
+                    case R.id.history:
+                        startActivity(new Intent(getApplicationContext(),History.class));
+                        overridePendingTransition(0,0);
+                        return true;
                     case R.id.home:
                         return true;
                 }
                 return false;
             }
         });
-       /* map.setOnClickListener(new View.OnClickListener() {
+    }
+    // bắt các sự kiện
+    public void setEvent(){
+       activeItemBottomNavigation();
+        sos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent_maps = new Intent(Home.this,Maps.class);
-                startActivity(intent_maps);
+                openDialogSelectCenter();
             }
         });
-        contact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent_toContact = new Intent(Home.this,Contact.class);
-                startActivity(intent_toContact);
-            }
-        });
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent_personal = new Intent(Home.this,ViewPersonal.class);
-                startActivity(intent_personal);
-            }
-        });*/
     }
 
+    public Double CalculationByDistance(double x, double y) {
+        double distance;
+        Location locationA = new Location("");
+        locationA.setLatitude(Double.valueOf(latitudeUser));
+        locationA.setLongitude(Double.valueOf(longitudeUser));
+        Location locationB = new Location("");
+        locationB.setLatitude(x);
+        locationB.setLongitude(y);
+        distance = locationA.distanceTo(locationB)/1000;
+        return distance;
+    }
+
+    // Tạo nội dung tin nhắn với nội dung đầy đủ
+    public String createContentSMS(){
+        return "I want to notificate for you I have a trouble, ";
+    }
+
+    // Gửi tin nhắn cho tất cả các liên hệ trong Contact
+    public void sendSMS(){
+        // lấy tất cả các số điện thoại có trong Contact
+            mDatabase = mDatabase.child("ContactUser").child(uid);
+            mDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    contact.clear();
+                    for(DataSnapshot data : snapshot.getChildren()){
+                        ObjectContact ds = data.getValue(ObjectContact.class);
+                        contact.add(ds);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            //thực hiện kiểm tra cho phép sử dụng tin nhắn của điện thoại
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)!= PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS)){
+
+            }else{
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+            }
+        }
+        // thực hiện gửi tin nhắn cho tất cả số điện thoại
+            for(ObjectContact data : contact){
+                send(data.getPhone_number(),"Test Test Send Message");
+            }
+        Toast.makeText(this, "gui roi", Toast.LENGTH_SHORT).show();
+    }
+
+    // Hàm gửi tin nhắn cho 1 số điện thoại
+    private void send(String phoneNumber, String message) {
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneNumber, null, message, null, null);
+    }
+
+    // Hàm thực hiện ghép latitude và longitude thành 1 chuỗi
+    public String mergLatLg(String latitude, String longitude){
+        return latitude + "," + longitude;
+    }
+
+    // thực hiện mở dialog để chọn type Center
+    public void openDialogSelectCenter(){
+      //  final String[] hichic = new String[1];
+        final String[] items = {"Police", "Hospital", "Fire"};
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle("Please Select a Type of Center.");
+        b.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                typeCenter = items[i];
+                dialogInterface.dismiss();
+                if (typeCenter != null){
+                     findCurentLocationUser();
+                }
+            }
+        });
+        AlertDialog mDialog = b.create();
+        mDialog.show();
+
+    }
+    // Hàm thực hiện tìm vị trí hiện tại của User.
+    public void findCurentLocationUser(){
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    Location location = task.getResult();
+                    if (location != null) {
+                        try {
+                            Geocoder geocoder = new Geocoder(Home.this, Locale.getDefault());
+                            List<Address> userLocation = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 10);
+                            cityUser= userLocation.get(0).getAdminArea()+"";
+                            latitudeUser = userLocation.get(0).getLatitude()+"";
+                            longitudeUser =  userLocation.get(0).getLongitude()+"";
+                            getListCenter(typeCenter,cityUser);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+        } else {
+            ActivityCompat.requestPermissions(Home.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
+    }
+
+    // thêm vào room chờ của center thông tin
+    public void setTransaction(String Center_id){
+        mDatabase.child("Transaction").child(Center_id).child("tran_status").setValue("true");
+        mDatabase.child("Transaction").child(Center_id).child("user_id").setValue(uid);
+        mDatabase.child("Transaction").child(Center_id).child("latitude_user").setValue(latitudeUser);
+        mDatabase.child("Transaction").child(Center_id).child("longitude_user").setValue(longitudeUser);
+
+    }
+    // Hàm thực hiện tìm center gần nhất với user
+ /*   public void findCenterNearest1(){
+        sendRequest(mergLatLg(latitudeUser,longitudeUser),mergLatLg(distanceList.get(0).getLatitude(),distanceList.get(0).getLongitude()));
+      //  minDistance = checkDistance;
+        for(ObjectDistanceCenter emplement : distanceList){
+            sendRequest(mergLatLg(latitudeUser,longitudeUser),mergLatLg(emplement.getLatitude(),emplement.getLongitude()));
+         //   if (checkDistance < minDistance){
+           //     minDistance = checkDistance;
+                latitudeCenter = emplement.getLatitude();
+                longitudeCenter = emplement.getLongitude();
+                nameCenter = emplement.getNamecenter();
+                finalIndex = emplement.getCenterid();
+            //}
+        }
+    }*/
+
+    public void findCenterNearest(List<ObjectProfileCenter> center){
+        double checkDistance,minDistance;
+        int indexOfNeareast = 0;
+        minDistance = CalculationByDistance(Double.valueOf(center.get(0).getCenter_latitude()),
+                Double.valueOf(center.get(0).getCenter_longitude()));
+        for(int i = 0 ; i< center.size() ; i++) {
+            checkDistance = CalculationByDistance(Double.valueOf(center.get(i).getCenter_latitude()),
+                    Double.valueOf(center.get(i).getCenter_longitude()));
+            if (checkDistance < minDistance) {
+                minDistance = checkDistance;
+                indexOfNeareast = i;
+            }
+        }
+        finalIndex = centerList.get(indexOfNeareast).getCenter_id();
+        setTransaction(finalIndex);
+    }
+
+    // Hàm thực hiện lấy thông tin vị trí của các Center đang sẵn sàng phù hợp gần User
+    public void getListCenter(String type_center,String city){
+        mDatabase.child("InformationCenter").child(type_center).child(city).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                for(DataSnapshot snap : snapshot.getChildren()) {
+                    ObjectProfileCenter ds = snap.getValue(ObjectProfileCenter.class);
+                    if (ds.getCenter_status().equals("true"))
+                    centerList.add(ds);
+                }
+                    findCenterNearest(centerList);
+                }else Toast.makeText(Home.this, "Loiiii!", Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+    }
+
+    //Hàm thực hiện gửi request tìm khoảng cách ngắn nhất
+    private void sendRequest(String origin, String destination ) {
+        if (origin.isEmpty()) {
+            return;
+        }
+        if (destination.isEmpty()) {
+            return;
+        }
+        try {
+            new DirectionFinder(this, origin, destination).execute();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Hàm thực hiện mở setting
     public void showPopup(View v){
         PopupMenu popupMenu = new PopupMenu(this, v);
         popupMenu.setOnMenuItemClickListener(this);
@@ -131,15 +360,15 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         popupMenu.show();
     }
 
+
     public void AnhXa(){
         popup = (Button)findViewById(R.id.btn_option);
-       // map = (ImageButton)findViewById(R.id.btn_map);
-      //  contact = (ImageButton)findViewById(R.id.btn_contact);
-      //  profile = (ImageButton)findViewById(R.id.btn_profile);
-      //  history = (ImageButton)findViewById(R.id.btn_history);
+        centerList = new ArrayList<>();
+        contact = new ArrayList<>();
         sos = findViewById(R.id.sos);
     }
 
+    // Hàm thực hiện các chức năng có trong setting
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
@@ -154,5 +383,21 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
                 return true;
             default: return false;
         }
+    }
+
+    @Override
+    public void onDirectionFinderStart() {
+
+    }
+
+    // Hàm trả về khoảng cách.
+    @Override
+    public void onDirectionFinderSuccess(List<Route> route) {
+        //checkDistance = route.get(0).distance.value;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
     }
 }

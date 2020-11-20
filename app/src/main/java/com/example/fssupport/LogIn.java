@@ -22,18 +22,17 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LogIn extends AppCompatActivity {
 
-    EditText email,password; // field nhập email và password
+    TextInputEditText email,password;// field nhập email và password
     CheckBox rememberMe; // check box remember me
     TextView error,goRegis,forgotPass; // TextView hiển thị lỗi, link đến Register, link đến ForgotPassword
     Button login; // Button login
     ProgressBar progress; // hiển thị progressbar
-    ImageView imgShowPass; // show/ hide password
-    private boolean isShowPass = false; // ban đầu để password hide
     FirebaseAuth mAuth; // khai báo Authentication của Firebase
     public static final String MyPREFERENCES = "MyPrefs"; //biến lưu của cặp user/password
     public static final String USERNAME = "userNameKey"; // biến lưu username
@@ -50,7 +49,6 @@ public class LogIn extends AppCompatActivity {
         AnhXa();
         loadData();
         setEvent();
-        showPassword(isShowPass); // khi khởi động pass sẽ hide
     }
 
     // hàm thực hiện chức năng Login vào hệ thống
@@ -108,25 +106,6 @@ public class LogIn extends AppCompatActivity {
             }
         });
 
-        imgShowPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isShowPass = !isShowPass;
-                showPassword(isShowPass);
-            }
-        });
-
-    }
-
-
-    public void showPassword(boolean isShow){
-        if(isShow){
-            password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            imgShowPass.setImageResource(R.drawable.hide);
-        }else{
-            password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            imgShowPass.setImageResource(R.drawable.show);
-        }
     }
 
     public void saveData(String username, String Pass){
@@ -154,8 +133,8 @@ public class LogIn extends AppCompatActivity {
 
     }
     public void AnhXa(){
-        email = (EditText)findViewById(R.id.txt_email);
-        password = (EditText)findViewById(R.id.txt_password);
+        email = findViewById(R.id.txt_email);
+        password = findViewById(R.id.txt_password);
         goRegis = (TextView) findViewById(R.id.btn_goto_regis);
         login = (Button)findViewById(R.id.btn_login);
         error = (TextView) findViewById(R.id.txt_error);
@@ -163,6 +142,5 @@ public class LogIn extends AppCompatActivity {
         forgotPass = (TextView)findViewById(R.id.btn_forgot);
         progress = (ProgressBar) findViewById(R.id.progress);
         progress.setVisibility(View.INVISIBLE);
-        imgShowPass = (ImageView)findViewById(R.id.img_password);
     }
 }

@@ -32,14 +32,13 @@ public class Maps extends AppCompatActivity implements Animation.AnimationListen
         setEvent();
     }
 
-    public void setEvent(){
+    public void activeItemBottomNavigation(){
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigate);
         bottomNavigationView.setSelectedItemId(R.id.map);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
-                    //1 cho cho history
                     case R.id.personal:
                         startActivity(new Intent(getApplicationContext(),ViewPersonal.class));
                         overridePendingTransition(0,0);
@@ -52,12 +51,19 @@ public class Maps extends AppCompatActivity implements Animation.AnimationListen
                         startActivity(new Intent(getApplicationContext(),Contact.class));
                         overridePendingTransition(0,0);
                         return true;
+                    case R.id.history:
+                        startActivity(new Intent(getApplicationContext(),History.class));
+                        overridePendingTransition(0,0);
+                        return true;
                     case R.id.map:
                         return true;
                 }
                 return false;
             }
         });
+    }
+    public void setEvent(){
+       activeItemBottomNavigation();
         gotoGGMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

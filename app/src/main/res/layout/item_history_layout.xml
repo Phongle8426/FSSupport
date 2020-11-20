@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_history"/>
+
+    <LinearLayout
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="2dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtv_nameCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:text="Hoan My Hospital"/>
+        <TextView
+            android:id="@+id/txtv_typeCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="20sp"
+            android:text="Hospital"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/txtv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="09-Nov"
+        android:textSize="18sp"
+        android:layout_gravity="center_vertical"
+        />
+
+</LinearLayout>
