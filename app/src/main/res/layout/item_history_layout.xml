@@ -1,43 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp">
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_history"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="5dp"
+    android:elevation="5dp"
+    android:backgroundTint="#1572BC"
+    app:cardUseCompatPadding="true">
 
-    <LinearLayout
-        android:layout_width="245dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="2dp"
-        android:orientation="vertical">
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:padding="15dp">
+        <RelativeLayout
+            android:id="@+id/bg"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="5dp">
+            <TextView
+                android:id="@+id/getFirstCharacter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="A"></TextView>
+        </RelativeLayout>
         <TextView
             android:id="@+id/txtv_nameCenter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:text="Hoan My Hospital"/>
+            android:layout_marginLeft="50dp"
+            android:text="This is demo"
+            android:textColor="#FFFFFF"
+            android:textSize="25dp"
+            android:textStyle="bold"></TextView>
         <TextView
             android:id="@+id/txtv_typeCenter"
+            android:layout_marginTop="35dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:textSize="20sp"
-            android:text="Hospital"/>
-    </LinearLayout>
-    <TextView
-        android:id="@+id/txtv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="09-Nov"
-        android:textSize="18sp"
-        android:layout_gravity="center_vertical"
-        />
+            android:layout_marginLeft="50dp"
+            android:text="This is demo"
+            android:textColor="#FFFFFF"
+            android:textSize="15dp"></TextView>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/txtv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="250dp"
+            android:layout_marginTop="20dp"
+            android:text="20h00 05-12-20"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

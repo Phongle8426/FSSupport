@@ -1,6 +1,7 @@
 package com.example.fssupport;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -40,6 +41,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -79,8 +81,6 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         AnhXa();
         getUid();
         setEvent();
-
-
     }
 
     //lấy UID
@@ -327,8 +327,11 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
                     if (ds.getCenter_status().equals("true"))
                     centerList.add(ds);
                 }
+                if (centerList.size() > 0)
                     findCenterNearest(centerList);
-                }else Toast.makeText(Home.this, "Loiiii!", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(Home.this, "No Center nearby active ! ", Toast.LENGTH_SHORT).show();
+                }else Toast.makeText(Home.this, "No have this Center nearby here !", Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -360,6 +363,40 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         popupMenu.show();
     }
 
+    public void receiveData(){
+        mDatabase.child("TestValue").child("idvalue").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                dialogLogOut();
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        receiveData();
+    }
 
     public void AnhXa(){
         popup = (Button)findViewById(R.id.btn_option);

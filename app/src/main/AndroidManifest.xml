@@ -20,7 +20,7 @@
         <activity android:name=".Register" />
         <activity android:name=".Contact" />
         <activity android:name=".Home" />
-        <activity android:name=".ViewPersonal"  android:windowSoftInputMode="stateVisible"/>
+        <activity android:name=".ViewPersonal"   android:windowSoftInputMode="stateHidden"></activity>
         <activity android:name=".FireStorages" />
         <activity android:name=".Maps" />
         <activity android:name=".Verify" />
@@ -31,7 +31,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/map_key" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

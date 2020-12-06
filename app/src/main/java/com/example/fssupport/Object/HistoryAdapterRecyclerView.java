@@ -1,15 +1,20 @@
 package com.example.fssupport.Object;
 
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.fssupport.History;
 import com.example.fssupport.R;
+import com.google.firebase.database.collection.LLRBNode;
 
 import java.util.List;
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +38,15 @@ public class HistoryAdapterRecyclerView  extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Random r = new Random();
+        int red = r.nextInt(255+1);
+        int green = r.nextInt(255+1);
+        int blu = r.nextInt(255+1);
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setShape(GradientDrawable.OVAL);
+        drawable.setColor(Color.rgb(red,green,blu));
         HistoryAdapterRecyclerView.ViewAdapterClass viewAdapterClass = (HistoryAdapterRecyclerView.ViewAdapterClass)holder;
+        ((ViewAdapterClass) holder).background.setBackground(drawable);
         ObjectHistory history = historyList.get(position);
         viewAdapterClass.name.setText(history.getNameCenter());
         viewAdapterClass.type.setText(history.getTypeCenter());
@@ -47,11 +60,13 @@ public class HistoryAdapterRecyclerView  extends RecyclerView.Adapter {
 
     public class ViewAdapterClass extends RecyclerView.ViewHolder {
         TextView name,type,time;
+        RelativeLayout background;
         public ViewAdapterClass(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.txtv_nameCenter);
             type = itemView.findViewById(R.id.txtv_typeCenter);
             time = itemView.findViewById(R.id.txtv_time);
+            background = itemView.findViewById(R.id.bg);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

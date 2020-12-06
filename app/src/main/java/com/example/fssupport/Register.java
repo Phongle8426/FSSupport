@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,10 +29,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Register extends AppCompatActivity{
 
-    ImageButton register;
-    TextView error;
-    EditText email,password,repassword,phonenumber;
-    public String errorMessage;
+    Button register;
+    TextInputEditText email,password,repassword,phonenumber;
     public static final String emailValue = "EMAILVALUE";
     public static final String passValue = "PASSLVALUE";
     public static final String phoneValue = "PHONEVALUE";
@@ -51,29 +51,33 @@ public class Register extends AppCompatActivity{
         setAction();
     }
     public void AnhXa(){
-        register = (ImageButton) findViewById(R.id.btn_register);
-        email = (EditText)findViewById(R.id.etxt_email);
-        password = (EditText)findViewById(R.id.etxt_password);
-        repassword = (EditText)findViewById(R.id.etxt_repass);
-        phonenumber = (EditText)findViewById(R.id.etxt_phone);
-        error = (TextView)findViewById(R.id.txt_error);
+        register = findViewById(R.id.btn_register);
+        email = findViewById(R.id.etxt_email);
+        password = findViewById(R.id.etxt_password);
+        repassword =findViewById(R.id.etxt_repass);
+        phonenumber = findViewById(R.id.etxt_phone);
     }
 
     public boolean showError(){
+        final String emailPattern =  "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         String Email = email.getText().toString();
         String Password = password.getText().toString();
         String Repassword = repassword.getText().toString();
         String Phonenumber = phonenumber.getText().toString();
         if(Email.isEmpty()||Password.isEmpty()||Repassword.isEmpty()||Phonenumber.isEmpty()){
-            errorMessage = "Something is empty!";
+            Toast.makeText(this, "Something is empty!", Toast.LENGTH_SHORT).show();
             return true;
         }
         if (Phonenumber.length()!=9){
-            errorMessage="Phone number invalid!";
+            Toast.makeText(this, "Phone number invalid!", Toast.LENGTH_SHORT).show();
             return true;
         }
         if(!Password.equals(Repassword)){
-            errorMessage="Repassword not true!";
+            Toast.makeText(this, "Re-Password is wrong!", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (!Email.matches(emailPattern)){
+            Toast.makeText(getApplicationContext(), "Invalid email", Toast.LENGTH_SHORT).show();
             return true;
         }
         return false;
@@ -86,16 +90,12 @@ public class Register extends AppCompatActivity{
                final String phone_number ="+84" + phonenumber.getText().toString();
                final String Email = email.getText().toString();
                final String Password = password.getText().toString();
-                if(showError()){
-                    error.setText(errorMessage);
-                    error.setVisibility(View.VISIBLE);
-                }
-                else {
+                if(!showError()){
                     mDatabase.child("PhoneNumber").orderByChild("phone").equalTo(phone_number).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if(snapshot.exists()){
-                                error.setText("This phone number already exists!");
+                                Toast.makeText(Register.this, "This phone number already exists!", Toast.LENGTH_SHORT).show();
                             }else {
                                 Intent intent = new Intent(Register.this, Verify.class);
                                 intent.putExtra(phoneValue,phone_number);
@@ -110,7 +110,6 @@ public class Register extends AppCompatActivity{
 
                         }
                     });
-
                 }
             }
         });

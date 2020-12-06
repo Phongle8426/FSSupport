@@ -124,12 +124,12 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
     public void pushInfo(){
         getValueOnField();
         ObjectInfoUser infoUser = new ObjectInfoUser(name2,email2, phone2, address2, idcard2, blood2, note2, birthday2);
-        mDatabase.child("InfoUser").child(uid).setValue(infoUser);
+        mDatabase.child("InfoUser").child(uid).child("Information").setValue(infoUser);
     }
 
    // Lấy thông tin của user từ DB về
     public void getInfoUser(){
-        mDatabase.child("InfoUser").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("InfoUser").child(uid).child("Information").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists())
@@ -145,40 +145,24 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
 
     // Lấy và hiển thị thông tin của user lên các trường
     public void showInfoUser(DataSnapshot snapshot){
-        List<ObjectInfoUser> infoUsers = new ArrayList<>();
-       /* ObjectInfoUser infoUser =new ObjectInfoUser();
-        infoUser.setName(snapshot.child(uid).child("name").getValue(String.class));
-        infoUser.setBirthday(snapshot.child(uid).child("birthday").getValue(String.class));
-        infoUser.setEmail(snapshot.child(uid).child("email").getValue(String.class));
-        infoUser.setPhone(snapshot.child(uid).child("phone").getValue(String.class));
-        infoUser.setAddress(snapshot.child(uid).child("address").getValue(String.class));
-        infoUser.setIdcard(snapshot.child(uid).child("idcard").getValue(String.class));
-        infoUser.setBlood(snapshot.child(uid).child("blood").getValue(String.class));
-        infoUser.setNote(snapshot.child(uid).child("note").getValue(String.class));
+      ObjectInfoUser info = new ObjectInfoUser();
+        info.setAddress(snapshot.child("address").getValue(String.class));
+        info.setBirthday(snapshot.child("birthday").getValue(String.class));
+        info.setBlood(snapshot.child("blood").getValue(String.class));
+        info.setEmail(snapshot.child("email").getValue(String.class));
+        info.setIdcard(snapshot.child("idcard").getValue(String.class));
+        info.setName(snapshot.child("name").getValue(String.class));
+        info.setNote(snapshot.child("note").getValue(String.class));
+        info.setPhone(snapshot.child("phone").getValue(String.class));
 
-        name.setText(infoUser.getName());
-        birthday.setText(infoUser.getBirthday());
-        email.setText(infoUser.getEmail());
-        phonenumber.setText(infoUser.getPhone());
-        address.setText(infoUser.getAddress());
-        idcard.setText(infoUser.getIdcard());
-        blood.setText(infoUser.getBlood());
-        note.setText(infoUser.getNote());
-
-        */
-        for (DataSnapshot data : snapshot.getChildren()){
-            ObjectInfoUser ds = data.getValue(ObjectInfoUser.class);
-            infoUsers.add(ds);
-        }
-        name.setText(infoUsers.get(0).getName());
-        birthday.setText(infoUsers.get(0).getBirthday());
-        email.setText(infoUsers.get(0).getEmail());
-        phonenumber.setText(infoUsers.get(0).getPhone());
-        address.setText(infoUsers.get(0).getAddress());
-        idcard.setText(infoUsers.get(0).getIdcard());
-        blood.setText(infoUsers.get(0).getBlood());
-        note.setText(infoUsers.get(0).getNote());
-
+        name.setText(info.getName());
+        birthday.setText(info.getBirthday());
+        email.setText(info.getEmail());
+        phonenumber.setText(info.getPhone());
+        address.setText(info.getAddress());
+        idcard.setText(info.getIdcard());
+        blood.setText(info.getBlood());
+        note.setText(info.getNote());
     }
 
     public void activeItemBottomNavigation(){
@@ -188,7 +172,6 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
-                    //1 cho cho history
                     case R.id.map:
                         startActivity(new Intent(getApplicationContext(),Maps.class));
                         overridePendingTransition(0,0);
@@ -274,13 +257,14 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
 
     //Dialog chọn nhóm máu
     public void dialogChooseBlood(){
-        final String[] datas = {"A", "B","C"};
+        final String[] datas = {"A", "B","O","AB","Rh+","Rh-"};
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Blood Type!");
         dialog.setSingleChoiceItems(datas, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 blood.setText(datas[i]);
+                dialogInterface.dismiss();
             }
         });
         AlertDialog al = dialog.create();
@@ -298,7 +282,7 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-              //  birthday.setText(simpleDateFormat.format(calendar.getTime()));
+                birthday.setText(simpleDateFormat.format(calendar.getTime()));
             }
         };
         new DatePickerDialog(this, dateSetListener,calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)).show();
@@ -324,55 +308,4 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
 
     }
 
-    // Lay du lieu anh tu camera
-  /*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        // chuyen tu app sang camera
-        imageIDcard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 1);
-            }
-        });
-        //Lay du lieu anh tu camera
-        if(requestCode == 1 && resultCode == RESULT_OK && data!=null){
-            Bitmap bitmap = (Bitmap)data.getExtras().get("data");
-           // imageID.setImageBitmap(bitmap);
-
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }*/
-
-    // push anh len storage firebase
- /*   public void upImgID(){
-        Calendar calendar = Calendar.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference mountainsRef = storageRef.child("image"+calendar.getTimeInMillis()+".png");
-        // Get the data from an ImageView as bytes
-        imageID.setDrawingCacheEnabled(true);
-        imageID.buildDrawingCache();
-        Bitmap bitmap = ((BitmapDrawable) imageID.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] data = baos.toByteArray();
-
-        UploadTask uploadTask = mountainsRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                Toast.makeText(Personal.this, "Error!!!", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                //  Uri download = taskSnapshot.getDownLoadUrl();
-                Toast.makeText(Personal.this, "thanh cong!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
 }

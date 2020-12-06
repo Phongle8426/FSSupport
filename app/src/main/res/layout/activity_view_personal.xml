@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -35,27 +35,18 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/imageView10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_personl_bg" />
-
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="460dp">
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/personal"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="350dp"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -74,6 +65,7 @@
                             android:id="@+id/txt_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:inputType="text"
                             android:textColor="#000000" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -92,6 +84,8 @@
                             android:id="@+id/txt_birthday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:focusableInTouchMode="true"
                             android:textColor="#000000" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,24 +104,7 @@
                             android:id="@+id/txt_address"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="#000000" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="350dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="5dp"
-                        android:hint="Phone Number"
-                        android:textColorHint="#000000"
-                        app:boxStrokeColor="#D4D8E7"
-                        app:hintTextColor="#3066AC">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/txt_phone"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:inputType="text"
                             android:textColor="#000000" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -146,15 +123,40 @@
                             android:id="@+id/email"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"
+                            android:textColor="#000000" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="172dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:hint="Phone Number"
+                        android:textColorHint="#000000"
+                        app:boxStrokeColor="#D4D8E7"
+                        app:hintTextColor="#3066AC">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txt_phone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone"
                             android:textColor="#000000" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="350dp"
+                        android:layout_width="172dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
                         android:layout_marginTop="5dp"
+                        android:layout_marginLeft="6dp"
                         android:hint="Type Blood"
                         android:textColorHint="#000000"
                         app:boxStrokeColor="#D4D8E7"
@@ -164,9 +166,12 @@
                             android:id="@+id/txt_blood"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:focusableInTouchMode="true"
                             android:textColor="#000000" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                </LinearLayout>
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="350dp"
@@ -182,6 +187,7 @@
                             android:id="@+id/txt_idcard"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:inputType="number"
                             android:textColor="#000000" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -202,20 +208,22 @@
                             android:layout_height="wrap_content"
                             android:textColor="#000000" />
                     </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
-            </ScrollView>
-    </LinearLayout>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigate"
+        </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        app:labelVisibilityMode="labeled"
-        android:background="@drawable/rounded"
-        app:itemIconTint="@drawable/selector"
-        app:menu="@menu/menu_navigate" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical" >
 
-
-</RelativeLayout>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigate"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:background="@drawable/rounded"
+            app:itemIconTint="@drawable/selector"
+            app:menu="@menu/menu_navigate" />
+    </LinearLayout>
+</LinearLayout>
