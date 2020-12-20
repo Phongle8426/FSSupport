@@ -27,6 +27,7 @@ import com.example.fssupport.Object.ObjectContact;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,7 +52,7 @@ import java.util.List;
 public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     TextInputEditText name,birthday,address,phonenumber,email,blood,idcard,note;
-    Button edit,save;
+    FloatingActionButton edit,save;
     private DatabaseReference mDatabase;
     private FirebaseStorage storage;
     public String uid, name2,birthday2, email2, phone2, address2, idcard2, blood2, note2;
@@ -217,7 +218,6 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
             @Override
             public void onClick(View view) {
                 dialogConfirm();
-             //   load.setVisibility(View.VISIBLE);
             }
         });
         blood.setOnClickListener(new View.OnClickListener() {
@@ -298,8 +298,8 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
         blood = findViewById(R.id.txt_blood);
         idcard = findViewById(R.id.txt_idcard);
         note =  findViewById(R.id.txt_note);
-        edit = (Button)findViewById(R.id.btn_edit);
-        save = (Button)findViewById(R.id.btn_save);
+        edit = findViewById(R.id.btn_edit);
+        save = findViewById(R.id.btn_save);
       //  load =(ProgressBar)findViewById(R.id.progressLoadInViewPersonal);
     }
 
@@ -307,5 +307,8 @@ public class ViewPersonal extends AppCompatActivity implements DatePickerDialog.
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
 
     }
+    @Override
+    public void onBackPressed(){
 
+    }
 }

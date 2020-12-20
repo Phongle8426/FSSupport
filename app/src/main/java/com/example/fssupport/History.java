@@ -59,8 +59,8 @@ public class History extends AppCompatActivity implements HistoryRecyclerViewCli
         adapterRecyclerView = new HistoryAdapterRecyclerView(historyList,this);
     }
     public void getListHistory(){
-        mDatabase = mDatabase.child("InfoUser").child(uid).child("HistoryUser");
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        mDatabase.child("InfoUser").child(uid).child("HistoryUser")
+        .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 historyList.clear();
@@ -70,6 +70,7 @@ public class History extends AppCompatActivity implements HistoryRecyclerViewCli
                 }
                 newHistoryAdapterRecyclerView();
                 recyclerView.setAdapter(adapterRecyclerView);
+                mDatabase.child("InfoUser").child(uid).child("HistoryUser").removeEventListener(this);
             }
 
             @Override
@@ -126,8 +127,10 @@ public class History extends AppCompatActivity implements HistoryRecyclerViewCli
         String time = historyList.get(position).getDayTime();
         String namecenter = historyList.get(position).getNameCenter();
         String typecenter = historyList.get(position).getTypeCenter();
+        String citycenter = historyList.get(position).getCityCenter();
         Intent intent = new Intent(getApplicationContext(),DetailHistory.class);
-        intent.putExtra("IDUSER",idCenter);
+        intent.putExtra("CITYCENTER",citycenter);
+        intent.putExtra("IDCENTER",idCenter);
         intent.putExtra("LATITUDEUSER",latitudeUser);
         intent.putExtra("LONGITUDEUSER",longitudeUser);
         intent.putExtra("TIMEUSER",time);

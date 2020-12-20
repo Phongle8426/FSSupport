@@ -17,7 +17,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +32,9 @@ import com.example.fssupport.Modules.DirectionFinderListener;
 import com.example.fssupport.Modules.Route;
 import com.example.fssupport.Object.ObjectContact;
 import com.example.fssupport.Object.ObjectDistanceCenter;
+import com.example.fssupport.Object.ObjectHistory;
 import com.example.fssupport.Object.ObjectProfileCenter;
+import com.example.fssupport.Object.ObjectSupportCenter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
@@ -50,7 +54,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.PublicKey;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -63,8 +71,12 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
     LottieAnimationView sos;
     SharedPreferences sharedpreferences;
     FusedLocationProviderClient fusedLocationProviderClient;
-    public String uid,longitudeUser,latitudeUser,cityUser,finalIndex,latitudeCenter,longitudeCenter,nameCenter,typeCenter;
-    public List<ObjectProfileCenter> centerList;
+    public int currentCenterIndex;
+    public String message,accept = "true",deny="false";
+    public String uid,longitudeUser,latitudeUser,cityUser,finalIndex,nameCenter,typeCenter;
+    public boolean trans = false;
+    boolean check = false;
+    public List<ObjectSupportCenter> centerList;
     public List<ObjectContact> contact;
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     private DatabaseReference mDatabase;
@@ -109,7 +121,34 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         AlertDialog al = dialog.create();
         al.show();
     }
+    // hàm mở dialog thông báo request đã thành công
+    public void dialogNotificateRequestSuccess(String center){
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Request Successful!");
+        dialog.setMessage("Your Request had accepted by "+ center);
+        dialog.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        AlertDialog al = dialog.create();
+        al.show();
+    }
 
+    public void dialogNotificateRequestFail(){
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Request Fail!");
+        dialog.setMessage("Have no center nearby here !");
+        dialog.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        AlertDialog al = dialog.create();
+        al.show();
+    }
     //chức năng Logout
     public void sigOut(){
         mAuth.signOut();
@@ -275,13 +314,82 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         }
     }
 
-    // thêm vào room chờ của center thông tin
-    public void setTransaction(String Center_id){
-        mDatabase.child("Transaction").child(Center_id).child("tran_status").setValue("true");
-        mDatabase.child("Transaction").child(Center_id).child("user_id").setValue(uid);
-        mDatabase.child("Transaction").child(Center_id).child("latitude_user").setValue(latitudeUser);
-        mDatabase.child("Transaction").child(Center_id).child("longitude_user").setValue(longitudeUser);
+    // thêm vào room chờ của center thông tin ở SubTransaction, xử lý trả lời của center trả lời của center ở MessageReceive
+    public void setTransaction(final String Center_id){
+        mDatabase.child("Requests").child(Center_id).child("tran_status").setValue(false);
+        mDatabase.child("Requests").child(Center_id).child("user_id").setValue(uid);
+        mDatabase.child("Requests").child(Center_id).child("latitude_user").setValue(latitudeUser);
+        mDatabase.child("Requests").child(Center_id).child("longitude_user").setValue(longitudeUser);
+        final Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!check) {
+                    listenRespond(Center_id);
+                     message = String.valueOf(message);
+                    if (message.compareTo(accept)==0){
+                        check = true;
+                        storeHistory(nameCenter,typeCenter,Center_id,latitudeUser,longitudeUser);
+                        mDatabase.child("Requests").child(Center_id).child("message_toUser").setValue("null");
+                        dialogNotificateRequestSuccess(nameCenter);
+                    }else if(message.compareTo(deny)==0){
+                        Toast.makeText(Home.this, "Khong nhan may", Toast.LENGTH_SHORT).show();
+                        check = true;
+                        // chuyển hướng tìm một center khác, loại center hiện tại ra khỏi listcenter
+                      //  deleteCenterCurrent(currentCenterIndex);
+                        mDatabase.child("Requests").child(Center_id).child("message_toUser").setValue("null");
+                    }else{
+                        //Toast.makeText(Home.this, "cho di", Toast.LENGTH_SHORT).show();
+                    }
+                    mHandler.postDelayed(this, 3000);
+                }
+            }
+        },3000);
+    }
 
+    //Lắng nghe phản hồi từ center
+    public void listenRespond(final String idcenter){
+        mDatabase.child("Requests").child(idcenter).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                if(snapshot.exists()){
+                        message = snapshot.getValue().toString();
+                        //Toast.makeText(Home.this, ""+message, Toast.LENGTH_SHORT).show();
+                    mDatabase.child("Requests").child(idcenter).removeEventListener(this);
+                }else
+                {
+                    Toast.makeText(Home.this, "Have no data", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    // Hàm ghi vào lịch sử của user
+    public void storeHistory(String centerName,String typeCenter,String idCenter,String lat,String longi){
+        DateFormat df = new SimpleDateFormat("HH'h'mm'-'dd/MM/yy");
+        String date = df.format(Calendar.getInstance().getTime());
+        String cityCenter = cityUser;
+        ObjectHistory historyUser = new ObjectHistory(centerName,typeCenter,cityCenter,date,idCenter,lat,longi);
+        mDatabase.child("InfoUser").child(uid).child("HistoryUser").push().setValue(historyUser);
     }
     // Hàm thực hiện tìm center gần nhất với user
  /*   public void findCenterNearest1(){
@@ -299,7 +407,8 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         }
     }*/
 
-    public void findCenterNearest(List<ObjectProfileCenter> center){
+ // Tìm center có khoảng cách ngắn nhất tới user.. trả về id và name
+    public void findCenterNearest(List<ObjectSupportCenter> center){
         double checkDistance,minDistance;
         int indexOfNeareast = 0;
         minDistance = CalculationByDistance(Double.valueOf(center.get(0).getCenter_latitude()),
@@ -313,31 +422,44 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
             }
         }
         finalIndex = centerList.get(indexOfNeareast).getCenter_id();
+        currentCenterIndex = indexOfNeareast;
+        nameCenter = centerList.get(indexOfNeareast).getCenter_name();
+        Toast.makeText(this, finalIndex, Toast.LENGTH_SHORT).show();
         setTransaction(finalIndex);
     }
 
+    // Hàm thực hiện xóa center đã từ chối request của user ra khỏi list center và nếu list > 0 thì  chạy lại hàm tìm kiếm center gần nhất
+    // nếu không thì thông báo không có center nào gần đây.
+//    public void deleteCenterCurrent(int index){
+//        centerList.remove(index);
+//        if (centerList.size()>0){
+//            findCenterNearest(centerList);
+//        }else{
+//            dialogNotificateRequestFail();
+//        }
+//    }
+
     // Hàm thực hiện lấy thông tin vị trí của các Center đang sẵn sàng phù hợp gần User
     public void getListCenter(String type_center,String city){
-        mDatabase.child("InformationCenter").child(type_center).child(city).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("SupportCenter").child(type_center).child(city).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
                 for(DataSnapshot snap : snapshot.getChildren()) {
-                    ObjectProfileCenter ds = snap.getValue(ObjectProfileCenter.class);
+                    ObjectSupportCenter ds = snap.getValue(ObjectSupportCenter.class);
                     if (ds.getCenter_status().equals("true"))
                     centerList.add(ds);
                 }
                 if (centerList.size() > 0)
                     findCenterNearest(centerList);
                 else
-                    Toast.makeText(Home.this, "No Center nearby active ! ", Toast.LENGTH_SHORT).show();
-                }else Toast.makeText(Home.this, "No have this Center nearby here !", Toast.LENGTH_SHORT).show();
+                    dialogNotificateRequestFail();
+                }else  dialogNotificateRequestFail();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
     }
 
     //Hàm thực hiện gửi request tìm khoảng cách ngắn nhất
@@ -363,39 +485,14 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         popupMenu.show();
     }
 
-    public void receiveData(){
-        mDatabase.child("TestValue").child("idvalue").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                dialogLogOut();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        receiveData();
+       // if (trans == true){
+            //Toast.makeText(this, ""+finalIndex, Toast.LENGTH_SHORT).show();
+            //listenRespond(finalIndex);
+       // }
     }
 
     public void AnhXa(){

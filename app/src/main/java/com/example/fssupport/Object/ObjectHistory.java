@@ -1,18 +1,27 @@
 package com.example.fssupport.Object;
 
 public class ObjectHistory {
-    String nameCenter,typeCenter,dayTime,centerID,latitude,longitude;
+    String nameCenter,typeCenter,cityCenter,dayTime,centerID,latitude,longitude;
 
     public ObjectHistory() {
     }
 
-    public ObjectHistory(String nameCenter, String typeCenter, String dayTime, String centerID, String latitude, String longitude) {
+    public ObjectHistory(String nameCenter, String typeCenter,String cityCenter, String dayTime, String centerID, String latitude, String longitude) {
         this.nameCenter = nameCenter;
         this.typeCenter = typeCenter;
+        this.cityCenter = cityCenter;
         this.dayTime = dayTime;
         this.centerID = centerID;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public String getCityCenter() {
+        return cityCenter;
+    }
+
+    public void setCityCenter(String cityCenter) {
+        this.cityCenter = cityCenter;
     }
 
     public String getCenterID() {

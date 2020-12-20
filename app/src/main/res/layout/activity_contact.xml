@@ -7,6 +7,23 @@
     android:orientation="vertical"
     tools:context=".Contact">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/family"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerInParent="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/soscontact"/>
+
+    <TextView
+        android:id="@+id/text_family"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="410dp"
+        android:text="Add up to 3 emergency contacts so they can receive an SMS when you use the SOS function"
+        android:textAlignment="center"
+        android:textColor="@color/accent" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +36,6 @@
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             app:lottie_rawRes="@raw/contact" />
-
         <ScrollView
             android:id="@+id/scrlContact"
             android:layout_width="match_parent"
@@ -35,6 +51,7 @@
                     android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
                 <TextView
+                    android:id="@+id/text"
                     android:layout_marginTop="15dp"
                     android:layout_width="338dp"
                     android:layout_height="60dp"
@@ -43,17 +60,16 @@
                     android:textColor="@color/accent"
                     android:textAlignment="center" />
             </LinearLayout>
-
         </ScrollView>
     </LinearLayout>
     <Button
         android:id="@+id/btnAddContact"
-        android:layout_width="350dp"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="More"
         android:textColor="#FFFFFF"
-        android:backgroundTint="@color/colorPrimary"
+        android:background="@drawable/shape_round"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="30dp"

@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -27,8 +28,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Verify extends AppCompatActivity {
     EditText code;
-    TextView error,reSend;
-    ImageButton verify;
+    TextView reSend;
+    Button verify;
     ProgressDialog loadingProcess;
     private String phonenumber;
     private FirebaseAuth mAuth;
@@ -50,8 +51,7 @@ public class Verify extends AppCompatActivity {
     public void AnhXa(){
         code = (EditText) findViewById(R.id.etxt_code);
         reSend = (TextView) findViewById(R.id.txt_resendCode);
-        verify = (ImageButton)findViewById(R.id.btn_verify);
-        error = (TextView)findViewById(R.id.txt_error);
+        verify = findViewById(R.id.btn_verify);
         loadingProcess = new ProgressDialog(this);
     }
     // Show Progress Dialog Verification
@@ -74,7 +74,7 @@ public class Verify extends AppCompatActivity {
                     //neu khong gui duoc yeu cau
                     @Override
                     public void onVerificationFailed(@NonNull FirebaseException e) {
-                        error.setText("This phone number exits!");
+                        Toast.makeText(Verify.this, "This phone number exits!", Toast.LENGTH_LONG).show();
                     }
 
                     // khi ma nhap dung code thi thuc hien dang ki email
@@ -108,8 +108,7 @@ public class Verify extends AppCompatActivity {
 
                             } else {
                                 if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                    error.setVisibility(View.VISIBLE);
-                                    error.setText("There was an error verifying OTP");
+                                    Toast.makeText(Verify.this, "There was an error verify OTP", Toast.LENGTH_LONG).show();
                                 }
                             }
                         }

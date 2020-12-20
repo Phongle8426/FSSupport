@@ -3,19 +3,23 @@ package com.example.fssupport;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.fssupport.Dialog.DialogAddContact;
 import com.example.fssupport.Object.ContactAdapter;
 import com.example.fssupport.Object.ContactAdapterRecyclerView;
@@ -41,6 +45,8 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
     RecyclerView recyclerView;
     ContactAdapterRecyclerView adapterRecyclerView;
     Button addContact;
+    LottieAnimationView family;
+    TextView text_family,text;
     public String uid,nameContact,phoneContact,allChildPost;
     public static final String nameValue = "NAME";
     public static final String phoneValue = "PHONE";
@@ -55,7 +61,22 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
         setEvent();
         getIDCanhan();
         getListContact();
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                String phone = contactList.get(viewHolder.getLayoutPosition()).getPhone_number();
+                deleteContact(phone);
+                contactList.remove(viewHolder.getLayoutPosition());
+                adapterRecyclerView.notifyItemRemoved(viewHolder.getLayoutPosition());
+            }
+        }).attachToRecyclerView(recyclerView);
     }
+
 
     public void getIDCanhan(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -74,13 +95,32 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                contactList.clear();
-                for(DataSnapshot data : snapshot.getChildren()){
-                    ObjectContact ds = data.getValue(ObjectContact.class);
-                    contactList.add(ds);
+                if (snapshot.exists()){
+                    text_family.setVisibility(View.INVISIBLE);
+                    family.setVisibility(View.INVISIBLE);
+                    text.setVisibility(View.VISIBLE);
+                    contactList.clear();
+                    for(DataSnapshot data : snapshot.getChildren()){
+                        ObjectContact ds = data.getValue(ObjectContact.class);
+                        contactList.add(ds);
+                    }
+                    newContactAdapterRecyclerView();
+                    recyclerView.setAdapter(adapterRecyclerView);
+                    if (contactList.size()==5){
+                        addContact.setEnabled(false);
+                        addContact.setBackgroundResource(R.drawable.shape_round_dis);
+                    }else{
+                        addContact.setBackgroundResource(R.drawable.shape_round);
+                        addContact.setEnabled(true);
+                    }
+
+                }else{
+                    contactList.clear();
+                    text_family.setVisibility(View.VISIBLE);
+                    family.setVisibility(View.VISIBLE);
+                    text.setVisibility(View.INVISIBLE);
                 }
-                newContactAdapterRecyclerView();
-                recyclerView.setAdapter(adapterRecyclerView);
+
             }
 
             @Override
@@ -91,8 +131,9 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
     }
 
     public void deleteContact(String contact){
-        mDatabase.child(contact).child("name_contact").setValue(null);
-        mDatabase.child(contact).child("phone_number").setValue(null);
+        //mDatabase.child(contact).child("name_contact").setValue(null);
+        //mDatabase.child(contact).child("phone_number").setValue(null);
+        mDatabase.child(contact).setValue(null);
     }
 
     public void activeItemBottomNavigation(){
@@ -144,6 +185,9 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
     public void AnhXa(){
         addContact = (Button)findViewById(R.id.btnAddContact);
         recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        text = findViewById(R.id.text);
+        text_family = findViewById(R.id.text_family);
+        family = findViewById(R.id.family);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         contactList = new ArrayList<>();
 
@@ -159,29 +203,5 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
         DialogAddContact dialogAddContact = new DialogAddContact();
         dialogAddContact.show(getSupportFragmentManager(),"add contact");
         dialogAddContact.setArguments(bundle);
-    }
-
-    @Override
-    public void onLongItemClick( final int position) {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Delete Contact!");
-        dialog.setMessage("Do you want to delete this contact?");
-        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String name = contactList.get(position).getName_contact();
-                contactList.remove(position);
-                adapterRecyclerView.notifyItemRemoved(position);
-                deleteContact(name);
-            }
-        });
-        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-        AlertDialog al = dialog.create();
-        al.show();
     }
 }

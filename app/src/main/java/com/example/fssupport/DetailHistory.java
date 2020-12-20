@@ -30,7 +30,7 @@ import java.util.List;
 public class DetailHistory extends AppCompatActivity implements OnMapReadyCallback{
 
     TextView time,location,name_center,center_address,center_mail,center_phone,center_type;
-    String timeUser,latitudeUser,longitudeUser,idCenter,nameCenter,addressCenter,mailCenter,phoneCenter,typeCenter;
+    String timeUser,latitudeUser,longitudeUser,idCenter,nameCenter,citycenter,addressCenter,mailCenter,phoneCenter,typeCenter;
     List<ObjectProfileCenter> infoCenterList;
     GoogleMap map;
     SupportMapFragment mapFragment;
@@ -52,17 +52,18 @@ public class DetailHistory extends AppCompatActivity implements OnMapReadyCallba
     }
     public void getPutExtraHistory(){
         Bundle extras = getIntent().getExtras();
+        citycenter = extras.getString("CITYCENTER");
         timeUser = extras.getString("TIMEUSER");
         latitudeUser = extras.getString("LATITUDEUSER");
         longitudeUser = extras.getString("LONGITUDEUSER");
-        idCenter = extras.getString("IDUSER");
+        idCenter = extras.getString("IDCENTER");
         nameCenter = extras.getString("NAMCENTER");
         typeCenter = extras.getString("TYPECENTER");
 
     }
 
     public void getInforUser(){
-        mDatabase.child("InformationCenter").child("Police").child("Đà Nẵng").child(idCenter).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("InfomationCenter").child(idCenter).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
@@ -76,6 +77,7 @@ public class DetailHistory extends AppCompatActivity implements OnMapReadyCallba
                     phoneCenter = info.getCenter_phone();
                 }
                 setInfoHistory();
+                mDatabase.child("InfomationCenter").child(idCenter).removeEventListener(this);
             }
 
             @Override

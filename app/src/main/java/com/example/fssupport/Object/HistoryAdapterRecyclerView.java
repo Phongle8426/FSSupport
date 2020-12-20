@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.example.fssupport.History;
 import com.example.fssupport.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.collection.LLRBNode;
 
 import java.util.List;
@@ -23,6 +25,7 @@ public class HistoryAdapterRecyclerView  extends RecyclerView.Adapter {
 
     private HistoryRecyclerViewClickInterface recyclerViewClickInterface;
     List<ObjectHistory> historyList;
+    public DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     public HistoryAdapterRecyclerView(List<ObjectHistory> historyList, History recyclerViewClickInterface){
         this.historyList = historyList;
         this.recyclerViewClickInterface = recyclerViewClickInterface;
@@ -48,7 +51,9 @@ public class HistoryAdapterRecyclerView  extends RecyclerView.Adapter {
         HistoryAdapterRecyclerView.ViewAdapterClass viewAdapterClass = (HistoryAdapterRecyclerView.ViewAdapterClass)holder;
         ((ViewAdapterClass) holder).background.setBackground(drawable);
         ObjectHistory history = historyList.get(position);
-        viewAdapterClass.name.setText(history.getNameCenter());
+        if(history.getNameCenter().length()>12)
+            viewAdapterClass.name.setText(history.getNameCenter().substring(0,11)+"...");
+        else  viewAdapterClass.name.setText(history.getNameCenter());
         viewAdapterClass.type.setText(history.getTypeCenter());
         viewAdapterClass.time.setText(history.getDayTime());
     }

@@ -16,8 +16,11 @@ import com.example.fssupport.R;
 import com.example.fssupport.Register;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -73,11 +76,29 @@ public class DialogAddContact extends AppCompatDialogFragment {
         phone = txtPhone.getText().toString();
        if (checkError(phone,name)==false) {
            ObjectContact contact = new ObjectContact(name, phone);
-           mDatabase.child("ContactUser").child(uid).child(name).setValue(contact);
+           mDatabase.child("ContactUser").child(uid).child(phone).setValue(contact);
        }
     }
 
     public boolean checkError(String phone, String name){
+        final int[] existsPhone = new int[1];
+        mDatabase.child("ContactUser").child(uid).orderByChild("phone_number").equalTo(phone).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists())
+                    existsPhone[0] = 1;
+                Toast.makeText(getContext(), "This phone number already exists"+"\n"+"Name is updated !", Toast.LENGTH_LONG).show();
+                mDatabase.child("ContactUser").child(uid).removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        if (existsPhone[0]==1){
+            //Toast.makeText(getContext(), "PhoneNumber already exists!", Toast.LENGTH_LONG).show();
+            return true;
+        }
         if(phone.isEmpty()||name.isEmpty()){
             Toast.makeText(getContext(), "PhoneNumber or Name is empty!", Toast.LENGTH_LONG).show();
             return true;

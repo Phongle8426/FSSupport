@@ -33,10 +33,10 @@ public class ContactAdapterRecyclerView extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ViewAdapterClass viewAdapterClass = (ViewAdapterClass)holder;
-        ObjectContact contact = contactList.get(position);
-        viewAdapterClass.phone.setText(contact.getPhone_number());
-        viewAdapterClass.name.setText(contact.getName_contact());
+             ViewAdapterClass viewAdapterClass = (ViewAdapterClass) holder;
+             ObjectContact contact = contactList.get(position);
+             viewAdapterClass.phone.setText(contact.getPhone_number());
+             viewAdapterClass.name.setText(contact.getName_contact());
     }
 
     @Override
@@ -46,25 +46,15 @@ public class ContactAdapterRecyclerView extends RecyclerView.Adapter{
 
     public class ViewAdapterClass extends RecyclerView.ViewHolder {
         TextView name,phone;
-        Button edit;
         public ViewAdapterClass(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.txtv_nameContact);
             phone = itemView.findViewById(R.id.txtv_phoneContact);
-            edit = itemView.findViewById(R.id.btn_edit);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position = getAbsoluteAdapterPosition();
+                    int position = getLayoutPosition();
                     recyclerViewClickInterface.onItemClick(position);
-                }
-            });
-
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    recyclerViewClickInterface.onLongItemClick(getAbsoluteAdapterPosition());
-                    return false;
                 }
             });
         }
