@@ -74,7 +74,7 @@ public class Verify extends AppCompatActivity {
                     //neu khong gui duoc yeu cau
                     @Override
                     public void onVerificationFailed(@NonNull FirebaseException e) {
-                        Toast.makeText(Verify.this, "This phone number exits!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Verify.this, "Verify phone number was wrong!", Toast.LENGTH_LONG).show();
                     }
 
                     // khi ma nhap dung code thi thuc hien dang ki email
@@ -146,4 +146,8 @@ public class Verify extends AppCompatActivity {
                 }
             });
         }
+    @Override
+    public void onBackPressed(){
+
+    }
     }

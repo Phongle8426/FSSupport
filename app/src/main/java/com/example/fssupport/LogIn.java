@@ -56,7 +56,7 @@ public class LogIn extends AppCompatActivity {
         final String Email = email.getText().toString(); // lấy mail
         final String Password = password.getText().toString(); // lấy pass
         if (Email.isEmpty() || Password.isEmpty()){        // Nếu email hay pass trống thì thực hiện
-            error.setText("Something is empty!");
+            error.setText("Email or Password is empty!");
             progress.setVisibility(View.INVISIBLE);         // báo lỗi
         }else{
             mAuth.signInWithEmailAndPassword(Email, Password)
@@ -130,7 +130,6 @@ public class LogIn extends AppCompatActivity {
         }
         else
             rememberMe.setChecked(false);
-
     }
     public void AnhXa(){
         email = findViewById(R.id.txt_email);
@@ -142,5 +141,10 @@ public class LogIn extends AppCompatActivity {
         forgotPass = (TextView)findViewById(R.id.btn_forgot);
         progress = (ProgressBar) findViewById(R.id.progress);
         progress.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onBackPressed(){
+        finish();
     }
 }

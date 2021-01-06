@@ -87,7 +87,7 @@ public class DialogAddContact extends AppCompatDialogFragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists())
                     existsPhone[0] = 1;
-                Toast.makeText(getContext(), "This phone number already exists"+"\n"+"Name is updated !", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(), "This phone number already exists"+"\n"+"Name is updated !", Toast.LENGTH_LONG).show();
                 mDatabase.child("ContactUser").child(uid).removeEventListener(this);
             }
 

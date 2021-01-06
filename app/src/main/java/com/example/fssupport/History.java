@@ -143,4 +143,9 @@ public class History extends AppCompatActivity implements HistoryRecyclerViewCli
     public void onLongItemClick(int position) {
 
     }
+
+    @Override
+    public void onBackPressed(){
+
+    }
 }

@@ -78,6 +78,7 @@ public class HistoryAdapterRecyclerView  extends RecyclerView.Adapter {
                     int position = getAbsoluteAdapterPosition();
                     recyclerViewClickInterface.onItemClick(position);
                 }
+
             });
         }
     }

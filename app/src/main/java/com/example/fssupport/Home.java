@@ -72,10 +72,10 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
     SharedPreferences sharedpreferences;
     FusedLocationProviderClient fusedLocationProviderClient;
     public int currentCenterIndex;
-    public String message,accept = "true",deny="false";
+    public String message;
     public String uid,longitudeUser,latitudeUser,cityUser,finalIndex,nameCenter,typeCenter;
     public boolean trans = false;
-    boolean check = false;
+    //boolean check = false;
     public List<ObjectSupportCenter> centerList;
     public List<ObjectContact> contact;
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
@@ -218,7 +218,20 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
 
     // Tạo nội dung tin nhắn với nội dung đầy đủ
     public String createContentSMS(){
-        return "I want to notificate for you I have a trouble, ";
+        final String[] name_user = new String[1];
+        mDatabase.child("InfoUser").child(uid).child("Information").child("name").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                name_user[0] = snapshot.getValue().toString();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return "I am " + name_user[0] +", I want to let you know I'm having trouble stay in  "+ latitudeUser +","+longitudeUser
+                +".Copy this number and search on map you will be known where am I, please!";
     }
 
     // Gửi tin nhắn cho tất cả các liên hệ trong Contact
@@ -251,9 +264,9 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
         }
         // thực hiện gửi tin nhắn cho tất cả số điện thoại
             for(ObjectContact data : contact){
-                send(data.getPhone_number(),"Test Test Send Message");
+                send(data.getPhone_number(),createContentSMS());
             }
-        Toast.makeText(this, "gui roi", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "The SMS already send !", Toast.LENGTH_SHORT).show();
     }
 
     // Hàm gửi tin nhắn cho 1 số điện thoại
@@ -280,6 +293,7 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
                 dialogInterface.dismiss();
                 if (typeCenter != null){
                      findCurentLocationUser();
+                    sendSMS();
                 }
             }
         });
@@ -303,6 +317,7 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
                             latitudeUser = userLocation.get(0).getLatitude()+"";
                             longitudeUser =  userLocation.get(0).getLongitude()+"";
                             getListCenter(typeCenter,cityUser);
+                           // Toast.makeText(Home.this, latitudeUser, Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -316,32 +331,52 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
 
     // thêm vào room chờ của center thông tin ở SubTransaction, xử lý trả lời của center trả lời của center ở MessageReceive
     public void setTransaction(final String Center_id){
+      //  Toast.makeText(this, "chạy trans", Toast.LENGTH_SHORT).show();
         mDatabase.child("Requests").child(Center_id).child("tran_status").setValue(false);
         mDatabase.child("Requests").child(Center_id).child("user_id").setValue(uid);
         mDatabase.child("Requests").child(Center_id).child("latitude_user").setValue(latitudeUser);
         mDatabase.child("Requests").child(Center_id).child("longitude_user").setValue(longitudeUser);
-        final Handler mHandler = new Handler();
+         final Handler mHandler = new Handler();
         mHandler.postDelayed(new Runnable() {
+            boolean check = false;
+            int i =1;
             @Override
             public void run() {
+                Log.d("AAAAAAAAAAAAAAAA"+i,"run");
                 if (!check) {
                     listenRespond(Center_id);
                      message = String.valueOf(message);
-                    if (message.compareTo(accept)==0){
+                    if (message.compareTo("true")==0){
                         check = true;
                         storeHistory(nameCenter,typeCenter,Center_id,latitudeUser,longitudeUser);
                         mDatabase.child("Requests").child(Center_id).child("message_toUser").setValue("null");
+                        mDatabase.child("Requests").child(Center_id).child("latitude_user").setValue("");
+                        mDatabase.child("Requests").child(Center_id).child("longitude_user").setValue("");
+                        mDatabase.child("Requests").child(Center_id).child("user_id").setValue("");
+                        mDatabase.child("Requests").child(Center_id).child("tran_status").setValue(true);
                         dialogNotificateRequestSuccess(nameCenter);
-                    }else if(message.compareTo(deny)==0){
-                        Toast.makeText(Home.this, "Khong nhan may", Toast.LENGTH_SHORT).show();
+                    }else if(message.compareTo("false")==0){
+                      //  Toast.makeText(Home.this, "Khong nhan may", Toast.LENGTH_SHORT).show();
                         check = true;
                         // chuyển hướng tìm một center khác, loại center hiện tại ra khỏi listcenter
                       //  deleteCenterCurrent(currentCenterIndex);
                         mDatabase.child("Requests").child(Center_id).child("message_toUser").setValue("null");
+                        mDatabase.child("Requests").child(Center_id).child("latitude_user").setValue("");
+                        mDatabase.child("Requests").child(Center_id).child("longitude_user").setValue("");
+                        mDatabase.child("Requests").child(Center_id).child("user_id").setValue("");
+                        mDatabase.child("Requests").child(Center_id).child("tran_status").setValue(true);
                     }else{
-                        //Toast.makeText(Home.this, "cho di", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Home.this, "wait", Toast.LENGTH_SHORT).show();
+                        i++;
                     }
                     mHandler.postDelayed(this, 3000);
+                    if (i==10){
+                        check = true;
+                        mDatabase.child("Requests").child(Center_id).child("latitude_user").setValue("");
+                        mDatabase.child("Requests").child(Center_id).child("longitude_user").setValue("");
+                        mDatabase.child("Requests").child(Center_id).child("user_id").setValue("");
+                        mDatabase.child("Requests").child(Center_id).child("tran_status").setValue(true);
+                    }
                 }
             }
         },3000);
@@ -358,8 +393,7 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 if(snapshot.exists()){
                         message = snapshot.getValue().toString();
-                        //Toast.makeText(Home.this, ""+message, Toast.LENGTH_SHORT).show();
-                    mDatabase.child("Requests").child(idcenter).removeEventListener(this);
+                        Log.d("MESSAGE", message);
                 }else
                 {
                     Toast.makeText(Home.this, "Have no data", Toast.LENGTH_LONG).show();
@@ -532,6 +566,10 @@ public class Home extends AppCompatActivity implements PopupMenu.OnMenuItemClick
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+    }
+    @Override
+    public void onBackPressed(){
 
     }
 }

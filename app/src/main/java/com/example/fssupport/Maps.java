@@ -130,4 +130,9 @@ public class Maps extends AppCompatActivity implements Animation.AnimationListen
     public void onAnimationRepeat(Animation animation) {
 
     }
+
+    @Override
+    public void onBackPressed(){
+
+    }
 }

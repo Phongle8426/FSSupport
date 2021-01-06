@@ -204,4 +204,9 @@ public class Contact extends AppCompatActivity implements RecyclerViewClickInter
         dialogAddContact.show(getSupportFragmentManager(),"add contact");
         dialogAddContact.setArguments(bundle);
     }
+
+    @Override
+    public void onBackPressed(){
+
+    }
 }
